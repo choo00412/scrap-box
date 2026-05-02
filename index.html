@@ -22,11 +22,13 @@
     .category-select { background-color: #1da1f2; color: white; padding: 4px 8px; border-radius: 12px; font-size: 12px; font-weight: bold; border: none; outline: none; cursor: pointer; }
     .date { font-size: 12px; color: #657786; }
     
+    /* 출처 플랫폼 뱃지 스타일 */
+    .platform-badge { display: inline-block; padding: 3px 6px; border-radius: 6px; font-size: 11px; font-weight: bold; color: white; margin-right: 5px; vertical-align: middle; }
+    
     .title { font-size: 16px; font-weight: bold; margin: 0 0 10px 0; line-height: 1.4; word-break: keep-all; }
-    .title a { color: #14171a; text-decoration: none; }
+    .title a { color: #14171a; text-decoration: none; vertical-align: middle; }
     .title a:hover { color: #1da1f2; text-decoration: underline; }
     
-    /* 메모(캡션) 스타일 */
     .memo-box { background-color: #f8f9fa; border: 1px dashed #cbd6e2; padding: 10px; border-radius: 8px; font-size: 13px; color: #555; margin-bottom: 10px; cursor: pointer; transition: 0.2s; line-height: 1.4; }
     .memo-box:hover { background-color: #e1e8ed; }
     .memo-box.has-content { border-style: solid; background-color: #e8f4fd; color: #14171a; }
@@ -45,7 +47,6 @@
     <button id="btn-old" onclick="setSort('old')">오래된순</button>
     <button id="btn-like" onclick="toggleLikedFilter()">❤️ 좋아요만</button>
     
-    <!-- 분류별 모아보기 필터 -->
     <select id="category-filter" class="filter-select" onchange="setCategoryFilter(this.value)">
       <option value="all">📁 전체 분류 보기</option>
       <option value="재희">재희</option>
@@ -77,21 +78,18 @@
       const sharedText = urlParams.get('text');
       const sharedTitleParam = urlParams.get('title');
 
-      // 1. URL 추출 (text 안에 url이 섞여올 경우를 대비)
       let finalUrl = sharedUrl || '';
       if (!finalUrl && sharedText && sharedText.includes('http')) {
         const urlMatch = sharedText.match(/https?:\/\/[^\s]+/);
         if (urlMatch) finalUrl = urlMatch[0];
       }
 
-      // 2. 텍스트(제목) 추출 및 링크 찌꺼기 제거 ("아 존나 입덕" 같은 텍스트만 남기기)
       let rawText = sharedText || sharedTitleParam || '';
       let finalTitle = rawText.replace(/https?:\/\/[^\s]+/g, '').trim();
       if (finalTitle === '') {
-        finalTitle = '새로운 Nitter 게시물';
+        finalTitle = '새로운 게시물';
       }
 
-      // 3. 데이터가 제대로 넘어왔다면 저장
       if (finalUrl && finalUrl.startsWith('http')) {
         saveLink(finalTitle, finalUrl);
         window.history.replaceState({}, document.title, window.location.pathname);
@@ -109,7 +107,7 @@
           date: new Date().toLocaleString('ko-KR'),
           liked: false,
           category: '미분류',
-          memo: '' // 메모 기능 추가!
+          memo: ''
         });
         saveToStorage();
       }
@@ -119,18 +117,26 @@
       localStorage.setItem('nitter_links', JSON.stringify(links));
     }
 
+    // ⭐️ URL을 분석해서 플랫폼 정보(이름, 색상)를 찾아주는 마법의 함수
+    function getPlatformInfo(url) {
+      const lowerUrl = url.toLowerCase();
+      if (lowerUrl.includes('nitter') || lowerUrl.includes('twitter.com') || lowerUrl.includes('x.com')) return { name: '🐦 Nitter', color: '#1da1f2' };
+      if (lowerUrl.includes('instagram.com')) return { name: '📸 인스타', color: '#E1306C' };
+      if (lowerUrl.includes('theqoo.net')) return { name: '🦆 더쿠', color: '#333333' };
+      if (lowerUrl.includes('fmkorea.com')) return { name: '⚽ 펨코', color: '#144288' };
+      if (lowerUrl.includes('youtube.com') || lowerUrl.includes('youtu.be')) return { name: '▶️ 유튜브', color: '#FF0000' };
+      return { name: '🌐 웹사이트', color: '#888888' }; // 모르는 사이트일 경우
+    }
+
     function renderLinks() {
       const listDiv = document.getElementById('link-list');
       
-      // 1. 좋아요 필터 적용
       let displayLinks = showOnlyLiked ? links.filter(link => link.liked) : [...links];
 
-      // 2. 카테고리 필터 적용
       if (currentCategoryFilter !== 'all') {
         displayLinks = displayLinks.filter(link => link.category === currentCategoryFilter);
       }
 
-      // 3. 정렬 적용
       if (currentSort === 'old') {
         displayLinks.sort((a, b) => a.id - b.id);
       } else {
@@ -143,10 +149,12 @@
       }
 
       listDiv.innerHTML = displayLinks.map(link => {
-        // 카테고리 선택 드롭다운 HTML 생성
         const categoryOptions = CATEGORIES.map(cat => 
           `<option value="${cat}" ${link.category === cat ? 'selected' : ''}>${cat}</option>`
         ).join('');
+
+        // ⭐️ 저장된 URL을 바탕으로 출처 뱃지 만들기
+        const platform = getPlatformInfo(link.url);
 
         return `
           <div class="link-card">
@@ -157,7 +165,10 @@
               <span class="date">${link.date}</span>
             </div>
             
-            <h3 class="title"><a href="${link.url}" target="_blank">${link.title}</a></h3>
+            <h3 class="title">
+              <span class="platform-badge" style="background-color: ${platform.color};">${platform.name}</span>
+              <a href="${link.url}" target="_blank">${link.title}</a>
+            </h3>
             
             <div class="memo-box ${link.memo ? 'has-content' : ''}" onclick="editMemo(${link.id})">
               ${link.memo ? link.memo : '✍️ 캡션을 추가하려면 클릭하세요 (예: 1분 30초 레전드)'}
@@ -174,25 +185,21 @@
       }).join('');
     }
 
-    // 변경된 카테고리 저장
     function changeCategory(id, newCategory) {
       const index = links.findIndex(l => l.id === id);
       if (index !== -1) {
         links[index].category = newCategory;
         saveToStorage();
-        // 전체보기가 아닐 때 분류를 바꾸면 리스트가 즉시 갱신되도록 렌더링
         if(currentCategoryFilter !== 'all') renderLinks(); 
       }
     }
 
-    // 캡션(메모) 수정 기능
     function editMemo(id) {
       const index = links.findIndex(l => l.id === id);
       if (index !== -1) {
         const currentMemo = links[index].memo || '';
         const newMemo = prompt("캡션을 입력하세요:", currentMemo);
         
-        // 취소를 누르지 않았을 경우에만 저장 (빈칸으로 비우는 것도 가능하게 처리)
         if (newMemo !== null) {
           links[index].memo = newMemo.trim();
           saveToStorage();
