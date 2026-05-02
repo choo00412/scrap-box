@@ -8,42 +8,33 @@
   <style>
     body { font-family: 'Segoe UI', sans-serif; padding: 15px; max-width: 500px; margin: 0 auto; background-color: #f5f8fa; }
     h1 { color: #1da1f2; font-size: 20px; font-weight: 800; margin-bottom: 15px; }
-    
     .controls { display: flex; gap: 5px; margin-bottom: 15px; flex-wrap: wrap; align-items: center; }
     button, .filter-select { padding: 6px 10px; border: none; border-radius: 15px; background-color: #e1e8ed; cursor: pointer; font-size: 12px; font-weight: bold; color: #14171a; }
     button.active { background-color: #1da1f2; color: white; }
-    
     .link-card { background: white; border: 1px solid #e1e8ed; padding: 12px; margin-bottom: 8px; border-radius: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
     .card-top-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
     .platform-badge { padding: 2px 6px; border-radius: 5px; font-size: 10px; font-weight: bold; color: white; }
     .category-select { border: 1px solid #1da1f2; color: #1da1f2; padding: 2px 5px; border-radius: 8px; font-size: 11px; font-weight: bold; background: white; outline: none; }
-    
     .title { font-size: 14px; font-weight: bold; margin: 0 0 8px 0; line-height: 1.3; }
     .title a { color: #14171a; text-decoration: none; }
-    
     .memo-box { background-color: #f8f9fa; border: 1px dashed #cbd6e2; padding: 6px 10px; border-radius: 6px; font-size: 12px; color: #777; margin-bottom: 8px; cursor: pointer; }
     .memo-box.has-content { border-style: solid; background-color: #f0f7ff; color: #14171a; }
-    
     .card-footer { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #f0f2f5; padding-top: 8px; }
     .reaction-group { display: flex; gap: 10px; }
     .react-btn { background: none; border: none; font-size: 16px; cursor: pointer; padding: 0; filter: grayscale(1); transition: 0.2s; opacity: 0.4; }
     .react-btn.active { filter: grayscale(0); transform: scale(1.2); opacity: 1; }
-    
     .delete-btn { font-size: 11px; color: #aab8c2; background: none; border: none; cursor: pointer; }
     .date { font-size: 10px; color: #aab8c2; }
   </style>
 </head>
 <body>
-
   <h1>📥 choo 보관함</h1>
-  
   <div class="controls">
     <button id="btn-new" class="active" onclick="setSort('new')">최신순</button>
     <button id="filter-heart" onclick="toggleReactionFilter('❤️')">❤️</button>
     <button id="filter-thumb" onclick="toggleReactionFilter('👍')">👍</button>
     <button id="filter-goat" onclick="toggleReactionFilter('🐐')">🐐</button>
     <button id="filter-yahoi" onclick="toggleReactionFilter('🤩')">🤩</button>
-    
     <select id="category-filter" class="filter-select" onchange="setCategoryFilter(this.value)">
       <option value="all">전체 분류</option>
       <option value="재희">재희</option>
@@ -56,7 +47,6 @@
       <option value="미분류">미분류</option>
     </select>
   </div>
-
   <div id="link-list"></div>
 
   <script>
@@ -64,22 +54,20 @@
     let currentSort = 'new';
     let currentReactionFilter = '';
     let currentCategoryFilter = 'all';
-
     const CATEGORIES = ['미분류', '재희', '혜윤', '벨', '웃김', '정보', '위시', '연예계'];
 
     window.addEventListener('DOMContentLoaded', () => {
       const urlParams = new URLSearchParams(window.location.search);
       const sharedUrl = urlParams.get('url');
       const sharedText = urlParams.get('text');
+      const sharedTitleParam = urlParams.get('title');
 
       let finalUrl = sharedUrl || (sharedText && sharedText.match(/https?:\/\/[^\s]+/)?.[0]) || '';
-      
-      // 저장할 때는 x.com으로 세탁
-      if (finalUrl.includes('nitter.net')) {
-          finalUrl = finalUrl.replace('nitter.net', 'x.com');
-      }
+      if (finalUrl.includes('nitter.net')) finalUrl = finalUrl.replace('nitter.net', 'x.com');
 
-      let finalTitle = (sharedText || '').replace(/https?:\/\/[^\s]+/g, '').trim() || '📸 새로운 기록';
+      // 제목 결정 로직 단순화
+      let finalTitle = (sharedText || sharedTitleParam || '').replace(/https?:\/\/[^\s]+/g, '').trim();
+      if (!finalTitle) finalTitle = '📸 새로운 기록';
 
       if (finalUrl && finalUrl.startsWith('http')) {
         if (!links.some(link => link.url === finalUrl)) {
@@ -101,7 +89,6 @@
       if (u.includes('instagram')) return { name: '인스타', color: '#E1306C' };
       if (u.includes('theqoo')) return { name: '더쿠', color: '#333' };
       if (u.includes('fmkorea')) return { name: '펨코', color: '#144288' };
-      if (u.includes('youtube')) return { name: '유튜브', color: '#134288' };
       return { name: '링크', color: '#888' };
     }
 
@@ -114,8 +101,6 @@
       
       listDiv.innerHTML = displayLinks.map(link => {
         const platform = getPlatformInfo(link.url);
-        
-        // ⭐️ [핵심] 볼 때는 다시 nitter로 접속해서 "앱 열기" 팝업 방지
         let viewUrl = link.url;
         if (viewUrl.includes('x.com')) viewUrl = viewUrl.replace('x.com', 'nitter.net');
 
