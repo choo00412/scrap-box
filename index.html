@@ -42,6 +42,7 @@
     <button id="filter-heart" onclick="toggleReactionFilter('❤️')">❤️</button>
     <button id="filter-thumb" onclick="toggleReactionFilter('👍')">👍</button>
     <button id="filter-goat" onclick="toggleReactionFilter('🐐')">🐐</button>
+    <button id="filter-yahoi" onclick="toggleReactionFilter('🤩')">🤩</button>
     
     <select id="category-filter" class="filter-select" onchange="setCategoryFilter(this.value)">
       <option value="all">전체 분류</option>
@@ -135,6 +136,7 @@
                 <button class="react-btn ${link.reaction === '❤️' ? 'active' : ''}" onclick="setReaction(${link.id}, '❤️')">❤️</button>
                 <button class="react-btn ${link.reaction === '👍' ? 'active' : ''}" onclick="setReaction(${link.id}, '👍')">👍</button>
                 <button class="react-btn ${link.reaction === '🐐' ? 'active' : ''}" onclick="setReaction(${link.id}, '🐐')">🐐</button>
+                <button class="react-btn ${link.reaction === '🤩' ? 'active' : ''}" onclick="setReaction(${link.id}, '🤩')">🤩</button>
               </div>
               <div>
                 <span class="date" style="margin-right:5px;">${link.date}</span>
@@ -157,6 +159,7 @@
       document.getElementById('filter-heart').classList.toggle('active', currentReactionFilter === '❤️');
       document.getElementById('filter-thumb').classList.toggle('active', currentReactionFilter === '👍');
       document.getElementById('filter-goat').classList.toggle('active', currentReactionFilter === '🐐');
+      document.getElementById('filter-yahoi').classList.toggle('active', currentReactionFilter === '🤩');
       renderLinks();
     }
 
