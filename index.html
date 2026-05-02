@@ -22,7 +22,6 @@
     .category-select { background-color: #1da1f2; color: white; padding: 4px 8px; border-radius: 12px; font-size: 12px; font-weight: bold; border: none; outline: none; cursor: pointer; }
     .date { font-size: 12px; color: #657786; }
     
-    /* 출처 플랫폼 뱃지 스타일 */
     .platform-badge { display: inline-block; padding: 3px 6px; border-radius: 6px; font-size: 11px; font-weight: bold; color: white; margin-right: 5px; vertical-align: middle; }
     
     .title { font-size: 16px; font-weight: bold; margin: 0 0 10px 0; line-height: 1.4; word-break: keep-all; }
@@ -86,22 +85,76 @@
 
       let rawText = sharedText || sharedTitleParam || '';
       let finalTitle = rawText.replace(/https?:\/\/[^\s]+/g, '').trim();
-      if (finalTitle === '') {
-        finalTitle = '새로운 게시물';
+      let needsAutoFetch = false; // 제목을 자동으로 긁어올지 여부
+
+      // 앱에서 글 내용(텍스트)을 안 줬을 경우!
+      if (finalTitle === '' || finalTitle === '제목 없음') {
+        finalTitle = '⏳ 제목을 불러오는 중...';
+        needsAutoFetch = true;
       }
 
       if (finalUrl && finalUrl.startsWith('http')) {
-        saveLink(finalTitle, finalUrl);
+        const newId = Date.now();
+        saveLink(newId, finalTitle, finalUrl);
         window.history.replaceState({}, document.title, window.location.pathname);
+        
+        // 글 내용이 없었다면 프록시(로봇)를 시켜서 제목을 긁어옵니다.
+        if (needsAutoFetch) {
+          fetchTitleFromUrl(finalUrl, newId);
+        }
       }
       
       renderLinks();
     });
 
-    function saveLink(title, url) {
+    // 외부 사이트에서 제목을 몰래 가져오는 마법의 함수
+    async function fetchTitleFromUrl(url, id) {
+      try {
+        // 무료 우회(Proxy) 서버를 이용해 해당 주소의 HTML 내용을 훔쳐옵니다.
+        const response = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`);
+        const data = await response.json();
+        
+        if (data.contents) {
+          const doc = new DOMParser().parseFromString(data.contents, "text/html");
+          let pageTitle = doc.querySelector('title') ? doc.querySelector('title').innerText : '';
+          
+          // 쓸데없는 공백 지우고, 50자가 넘으면 뒤를 '...'으로 자름 (앞부분만 깔끔하게!)
+          pageTitle = pageTitle.replace(/\n/g, ' ').trim();
+          if (pageTitle.length > 50) {
+            pageTitle = pageTitle.substring(0, 50) + '...';
+          }
+
+          if (pageTitle) {
+            const index = links.findIndex(l => l.id === id);
+            if (index !== -1) {
+              links[index].title = pageTitle;
+              saveToStorage();
+              renderLinks(); // 화면을 새 제목으로 짠! 하고 바꿈
+            }
+          } else {
+            fallbackTitle(id);
+          }
+        }
+      } catch (error) {
+        console.error('타이틀 긁어오기 실패:', error);
+        fallbackTitle(id);
+      }
+    }
+
+    // 긁어오기에 실패했을 때 보여줄 텍스트
+    function fallbackTitle(id) {
+      const index = links.findIndex(l => l.id === id);
+      if (index !== -1) {
+        links[index].title = '새로운 링크 (내용을 읽을 수 없음)';
+        saveToStorage();
+        renderLinks();
+      }
+    }
+
+    function saveLink(id, title, url) {
       if (!links.some(link => link.url === url)) {
         links.unshift({ 
-          id: Date.now(), 
+          id: id, 
           title: title, 
           url: url, 
           date: new Date().toLocaleString('ko-KR'),
@@ -117,7 +170,6 @@
       localStorage.setItem('nitter_links', JSON.stringify(links));
     }
 
-    // ⭐️ URL을 분석해서 플랫폼 정보(이름, 색상)를 찾아주는 마법의 함수
     function getPlatformInfo(url) {
       const lowerUrl = url.toLowerCase();
       if (lowerUrl.includes('nitter') || lowerUrl.includes('twitter.com') || lowerUrl.includes('x.com')) return { name: '🐦 Nitter', color: '#1da1f2' };
@@ -125,7 +177,7 @@
       if (lowerUrl.includes('theqoo.net')) return { name: '🦆 더쿠', color: '#333333' };
       if (lowerUrl.includes('fmkorea.com')) return { name: '⚽ 펨코', color: '#144288' };
       if (lowerUrl.includes('youtube.com') || lowerUrl.includes('youtu.be')) return { name: '▶️ 유튜브', color: '#FF0000' };
-      return { name: '🌐 웹사이트', color: '#888888' }; // 모르는 사이트일 경우
+      return { name: '🌐 링크', color: '#888888' };
     }
 
     function renderLinks() {
@@ -153,7 +205,6 @@
           `<option value="${cat}" ${link.category === cat ? 'selected' : ''}>${cat}</option>`
         ).join('');
 
-        // ⭐️ 저장된 URL을 바탕으로 출처 뱃지 만들기
         const platform = getPlatformInfo(link.url);
 
         return `
