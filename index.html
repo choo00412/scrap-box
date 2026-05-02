@@ -6,17 +6,15 @@
   <title>choo 보관함</title>
   <link rel="manifest" href="manifest.json">
   <style>
-    /* 전체적인 크기를 줄이고 콤팩트하게 수정 */
     body { font-family: 'Segoe UI', sans-serif; padding: 15px; max-width: 500px; margin: 0 auto; background-color: #f5f8fa; }
     h1 { color: #1da1f2; font-size: 20px; font-weight: 800; margin-bottom: 15px; }
     
-    .controls { display: flex; gap: 5px; margin-bottom: 15px; flex-wrap: wrap; }
+    /* 상단 컨트롤러 디자인 */
+    .controls { display: flex; gap: 5px; margin-bottom: 15px; flex-wrap: wrap; align-items: center; }
     button, .filter-select { padding: 6px 10px; border: none; border-radius: 15px; background-color: #e1e8ed; cursor: pointer; font-size: 12px; font-weight: bold; color: #14171a; }
     button.active { background-color: #1da1f2; color: white; }
     
     .link-card { background: white; border: 1px solid #e1e8ed; padding: 12px; margin-bottom: 8px; border-radius: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
-    
-    /* 플랫폼 뱃지와 분류 선택을 한 행에 배치 */
     .card-top-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
     .platform-badge { padding: 2px 6px; border-radius: 5px; font-size: 10px; font-weight: bold; color: white; }
     .category-select { border: 1px solid #1da1f2; color: #1da1f2; padding: 2px 5px; border-radius: 8px; font-size: 11px; font-weight: bold; background: white; outline: none; }
@@ -24,13 +22,12 @@
     .title { font-size: 14px; font-weight: bold; margin: 0 0 8px 0; line-height: 1.3; word-break: keep-all; }
     .title a { color: #14171a; text-decoration: none; }
     
-    /* 캡션 박스 디자인 수정 */
     .memo-box { background-color: #f8f9fa; border: 1px dashed #cbd6e2; padding: 6px 10px; border-radius: 6px; font-size: 12px; color: #777; margin-bottom: 8px; cursor: pointer; }
     .memo-box.has-content { border-style: solid; background-color: #f0f7ff; color: #14171a; }
     
     .card-footer { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #f0f2f5; padding-top: 8px; }
     .reaction-group { display: flex; gap: 10px; }
-    .react-btn { background: none; border: none; font-size: 16px; cursor: pointer; padding: 0; filter: grayscale(1); transition: 0.2s; opacity: 0.5; }
+    .react-btn { background: none; border: none; font-size: 16px; cursor: pointer; padding: 0; filter: grayscale(1); transition: 0.2s; opacity: 0.4; }
     .react-btn.active { filter: grayscale(0); transform: scale(1.2); opacity: 1; }
     
     .delete-btn { font-size: 11px; color: #aab8c2; background: none; border: none; cursor: pointer; }
@@ -43,9 +40,13 @@
   
   <div class="controls">
     <button id="btn-new" class="active" onclick="setSort('new')">최신순</button>
-    <button id="btn-like" onclick="toggleLikedFilter()">❤️</button>
+    <!-- 반응별 필터 버튼들 -->
+    <button id="filter-heart" onclick="toggleReactionFilter('❤️')">❤️</button>
+    <button id="filter-thumb" onclick="toggleReactionFilter('👍')">👍</button>
+    <button id="filter-goat" onclick="toggleReactionFilter('🐐')">🐐</button>
+    
     <select id="category-filter" class="filter-select" onchange="setCategoryFilter(this.value)">
-      <option value="all">전체</option>
+      <option value="all">전체 분류</option>
       <option value="재희">재희</option>
       <option value="혜윤">혜윤</option>
       <option value="벨">벨</option>
@@ -60,18 +61,13 @@
   <div id="link-list"></div>
 
   <script>
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('sw.js');
-    }
-
     let links = JSON.parse(localStorage.getItem('nitter_links')) || [];
     let currentSort = 'new';
-    let showOnlyLiked = false;
+    let currentReactionFilter = ''; // 현재 어떤 이모티콘을 필터링 중인지
     let currentCategoryFilter = 'all';
 
     const CATEGORIES = ['미분류', '재희', '혜윤', '벨', '웃김', '정보', '위시', '연예계'];
 
-    // ⭐️ [과거 데이터 세탁] 기존 데이터 중 nitter 주소를 x.com으로 한꺼번에 변경
     function migrateOldData() {
       let isUpdated = false;
       links = links.map(link => {
@@ -79,7 +75,6 @@
           link.url = link.url.replace('nitter.net', 'x.com');
           isUpdated = true;
         }
-        // 반응 정보가 없는 과거 데이터를 위해 초기화
         if (link.reaction === undefined) {
           link.reaction = link.liked ? '❤️' : '';
           isUpdated = true;
@@ -90,31 +85,24 @@
     }
 
     window.addEventListener('DOMContentLoaded', () => {
-      migrateOldData(); // 앱 시작 시 기존 데이터 자동 수정
+      migrateOldData();
       
       const urlParams = new URLSearchParams(window.location.search);
       const sharedUrl = urlParams.get('url');
       const sharedText = urlParams.get('text');
 
       let finalUrl = sharedUrl || (sharedText && sharedText.match(/https?:\/\/[^\s]+/)?.[0]) || '';
-      
-      // 새로 들어오는 링크도 즉시 변환
-      if (finalUrl.includes('nitter.net')) {
-        finalUrl = finalUrl.replace('nitter.net', 'x.com');
-      }
+      if (finalUrl.includes('nitter.net')) finalUrl = finalUrl.replace('nitter.net', 'x.com');
 
-      let finalTitle = (sharedText || '').replace(/https?:\/\/[^\s]+/g, '').trim() || '새로운 스크랩';
+      // 제목 기본값 설정 (복잡한 긁어오기 제거)
+      let finalTitle = (sharedText || '').replace(/https?:\/\/[^\s]+/g, '').trim() || '📸 새로운 기록';
 
       if (finalUrl && finalUrl.startsWith('http')) {
         if (!links.some(link => link.url === finalUrl)) {
           links.unshift({ 
-            id: Date.now(), 
-            title: finalTitle, 
-            url: finalUrl, 
+            id: Date.now(), title: finalTitle, url: finalUrl, 
             date: new Date().toLocaleDateString(), 
-            reaction: '', // 반응 이모티콘 저장용
-            category: '미분류', 
-            memo: '' 
+            reaction: '', category: '미분류', memo: '' 
           });
           saveToStorage();
         }
@@ -129,20 +117,21 @@
       if (u.includes('instagram')) return { name: '인스타', color: '#E1306C' };
       if (u.includes('theqoo')) return { name: '더쿠', color: '#333' };
       if (u.includes('fmkorea')) return { name: '펨코', color: '#144288' };
-      if (u.includes('youtube') || u.includes('youtu.be')) return { name: '유튜브', color: '#FF0000' };
       return { name: '링크', color: '#888' };
     }
 
     function renderLinks() {
       const listDiv = document.getElementById('link-list');
       
-      // 필터링 적용
-      let displayLinks = showOnlyLiked ? links.filter(l => l.reaction === '❤️') : [...links];
+      // 필터링 (반응 + 카테고리)
+      let displayLinks = [...links];
+      if (currentReactionFilter) {
+        displayLinks = displayLinks.filter(l => l.reaction === currentReactionFilter);
+      }
       if (currentCategoryFilter !== 'all') {
         displayLinks = displayLinks.filter(l => l.category === currentCategoryFilter);
       }
 
-      // 정렬 적용
       displayLinks.sort((a, b) => currentSort === 'new' ? b.id - a.id : a.id - b.id);
       
       listDiv.innerHTML = displayLinks.map(link => {
@@ -169,7 +158,7 @@
                 <button class="react-btn ${link.reaction === '🐐' ? 'active' : ''}" onclick="setReaction(${link.id}, '🐐')">🐐</button>
               </div>
               <div>
-                <span class="date" style="margin-right:8px;">${link.date}</span>
+                <span class="date" style="margin-right:5px;">${link.date}</span>
                 <button class="delete-btn" onclick="deleteLink(${link.id})">삭제</button>
               </div>
             </div>
@@ -180,63 +169,42 @@
 
     function setReaction(id, emoji) {
       const index = links.findIndex(l => l.id === id);
-      if (index !== -1) {
-        // 이미 선택된 걸 다시 누르면 해제, 아니면 변경
-        links[index].reaction = links[index].reaction === emoji ? '' : emoji;
-        saveToStorage();
-        renderLinks();
+      links[index].reaction = links[index].reaction === emoji ? '' : emoji;
+      saveToStorage(); renderLinks();
+    }
+
+    // 반응별 필터링 토글 함수
+    function toggleReactionFilter(emoji) {
+      if (currentReactionFilter === emoji) {
+        currentReactionFilter = ''; // 이미 켜져있으면 끄기
+      } else {
+        currentReactionFilter = emoji; // 아니면 해당 이모티콘 켜기
       }
+      
+      // 버튼 활성화 상태 표시
+      document.getElementById('filter-heart').classList.toggle('active', currentReactionFilter === '❤️');
+      document.getElementById('filter-thumb').classList.toggle('active', currentReactionFilter === '👍');
+      document.getElementById('filter-goat').classList.toggle('active', currentReactionFilter === '🐐');
+      
+      renderLinks();
     }
 
     function editMemo(id) {
       const index = links.findIndex(l => l.id === id);
-      if (index !== -1) {
-        const newMemo = prompt("캡션 작성", links[index].memo);
-        if (newMemo !== null) {
-          links[index].memo = newMemo.trim();
-          saveToStorage();
-          renderLinks();
-        }
-      }
+      const newMemo = prompt("캡션 작성", links[index].memo);
+      if (newMemo !== null) { links[index].memo = newMemo.trim(); saveToStorage(); renderLinks(); }
     }
 
     function changeCategory(id, newCat) {
       const index = links.findIndex(l => l.id === id);
-      if (index !== -1) {
-        links[index].category = newCat;
-        saveToStorage();
-        if(currentCategoryFilter !== 'all') renderLinks(); 
-      }
+      links[index].category = newCat; saveToStorage(); 
+      if(currentCategoryFilter !== 'all') renderLinks(); 
     }
 
-    function deleteLink(id) {
-      if(confirm("이 링크를 삭제하시겠습니까?")) {
-        links = links.filter(l => l.id !== id);
-        saveToStorage();
-        renderLinks();
-      }
-    }
-
-    function saveToStorage() {
-      localStorage.setItem('nitter_links', JSON.stringify(links));
-    }
-
-    function setSort(type) {
-      currentSort = type;
-      document.getElementById('btn-new').classList.toggle('active', type === 'new');
-      renderLinks();
-    }
-
-    function toggleLikedFilter() {
-      showOnlyLiked = !showOnlyLiked;
-      document.getElementById('btn-like').classList.toggle('active', showOnlyLiked);
-      renderLinks();
-    }
-
-    function setCategoryFilter(category) {
-      currentCategoryFilter = category;
-      renderLinks();
-    }
+    function deleteLink(id) { if(confirm("삭제할까요?")) { links = links.filter(l => l.id !== id); saveToStorage(); renderLinks(); } }
+    function saveToStorage() { localStorage.setItem('nitter_links', JSON.stringify(links)); }
+    function setSort(type) { currentSort = type; renderLinks(); }
+    function setCategoryFilter(category) { currentCategoryFilter = category; renderLinks(); }
   </script>
 </body>
 </html>
