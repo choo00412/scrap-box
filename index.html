@@ -3,36 +3,58 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Nitter 보관함</title>
+  <title>choo 보관함</title>
   <link rel="manifest" href="manifest.json">
   <style>
     body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 20px; max-width: 600px; margin: 0 auto; background-color: #f5f8fa; }
-    h1 { color: #1da1f2; font-size: 24px; }
-    .controls { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
-    button { padding: 8px 12px; border: none; border-radius: 20px; background-color: #e1e8ed; cursor: pointer; font-size: 14px; font-weight: bold; color: #14171a; transition: 0.2s; }
+    h1 { color: #1da1f2; font-size: 24px; font-weight: 800; }
+    
+    .controls { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; align-items: center; }
+    button { padding: 8px 12px; border: none; border-radius: 20px; background-color: #e1e8ed; cursor: pointer; font-size: 13px; font-weight: bold; color: #14171a; transition: 0.2s; }
     button:hover { background-color: #cbd6e2; }
     button.active { background-color: #1da1f2; color: white; }
     
+    .filter-select { padding: 8px 12px; border-radius: 20px; border: 1px solid #cbd6e2; background-color: white; font-size: 13px; font-weight: bold; color: #14171a; cursor: pointer; outline: none; }
+    
     .link-card { background: white; border: 1px solid #e1e8ed; padding: 15px; margin-bottom: 15px; border-radius: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
     .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-    .category-tag { background-color: #1da1f2; color: white; padding: 4px 8px; border-radius: 12px; font-size: 12px; cursor: pointer; font-weight: bold; }
+    
+    .category-select { background-color: #1da1f2; color: white; padding: 4px 8px; border-radius: 12px; font-size: 12px; font-weight: bold; border: none; outline: none; cursor: pointer; }
     .date { font-size: 12px; color: #657786; }
-    .title { font-size: 16px; font-weight: bold; margin: 0 0 10px 0; line-height: 1.4; }
+    
+    .title { font-size: 16px; font-weight: bold; margin: 0 0 10px 0; line-height: 1.4; word-break: keep-all; }
     .title a { color: #14171a; text-decoration: none; }
     .title a:hover { color: #1da1f2; text-decoration: underline; }
-    .card-actions { display: flex; justify-content: space-between; margin-top: 15px; border-top: 1px solid #e1e8ed; padding-top: 10px; }
+    
+    /* 메모(캡션) 스타일 */
+    .memo-box { background-color: #f8f9fa; border: 1px dashed #cbd6e2; padding: 10px; border-radius: 8px; font-size: 13px; color: #555; margin-bottom: 10px; cursor: pointer; transition: 0.2s; line-height: 1.4; }
+    .memo-box:hover { background-color: #e1e8ed; }
+    .memo-box.has-content { border-style: solid; background-color: #e8f4fd; color: #14171a; }
+    
+    .card-actions { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; border-top: 1px solid #e1e8ed; padding-top: 10px; }
     .like-btn { background: none; border: none; font-size: 18px; cursor: pointer; padding: 0; color: #e0245e; }
-    .delete-btn { background: none; border: none; font-size: 14px; cursor: pointer; padding: 0; color: #657786; }
+    .delete-btn { background: none; border: none; font-size: 13px; cursor: pointer; padding: 0; color: #657786; }
   </style>
 </head>
 <body>
 
-  <h1>📥 나의 Nitter 보관함</h1>
+  <h1>📥 choo 보관함</h1>
   
   <div class="controls">
     <button id="btn-new" class="active" onclick="setSort('new')">최신순</button>
     <button id="btn-old" onclick="setSort('old')">오래된순</button>
     <button id="btn-like" onclick="toggleLikedFilter()">❤️ 좋아요만</button>
+    
+    <!-- 분류별 모아보기 필터 -->
+    <select id="category-filter" class="filter-select" onchange="setCategoryFilter(this.value)">
+      <option value="all">📁 전체 분류 보기</option>
+      <option value="재희">재희</option>
+      <option value="혜윤">혜윤</option>
+      <option value="벨">벨</option>
+      <option value="웃김">웃김</option>
+      <option value="정보">정보</option>
+      <option value="미분류">미분류</option>
+    </select>
   </div>
 
   <div id="link-list"></div>
@@ -45,20 +67,39 @@
     let links = JSON.parse(localStorage.getItem('nitter_links')) || [];
     let currentSort = 'new';
     let showOnlyLiked = false;
+    let currentCategoryFilter = 'all';
+
+    const CATEGORIES = ['미분류', '재희', '혜윤', '벨', '웃김', '정보'];
 
     window.addEventListener('DOMContentLoaded', () => {
       const urlParams = new URLSearchParams(window.location.search);
-      const sharedUrl = urlParams.get('url') || urlParams.get('text');
-      const sharedTitle = urlParams.get('title') || '제목 없음';
+      const sharedUrl = urlParams.get('url');
+      const sharedText = urlParams.get('text');
+      const sharedTitleParam = urlParams.get('title');
 
-      if (sharedUrl && sharedUrl.startsWith('http')) {
-        saveLink(sharedTitle, sharedUrl);
+      // 1. URL 추출 (text 안에 url이 섞여올 경우를 대비)
+      let finalUrl = sharedUrl || '';
+      if (!finalUrl && sharedText && sharedText.includes('http')) {
+        const urlMatch = sharedText.match(/https?:\/\/[^\s]+/);
+        if (urlMatch) finalUrl = urlMatch[0];
+      }
+
+      // 2. 텍스트(제목) 추출 및 링크 찌꺼기 제거 ("아 존나 입덕" 같은 텍스트만 남기기)
+      let rawText = sharedText || sharedTitleParam || '';
+      let finalTitle = rawText.replace(/https?:\/\/[^\s]+/g, '').trim();
+      if (finalTitle === '') {
+        finalTitle = '새로운 Nitter 게시물';
+      }
+
+      // 3. 데이터가 제대로 넘어왔다면 저장
+      if (finalUrl && finalUrl.startsWith('http')) {
+        saveLink(finalTitle, finalUrl);
         window.history.replaceState({}, document.title, window.location.pathname);
       }
+      
       renderLinks();
     });
 
-    // 링크 저장 (새로운 속성들 추가)
     function saveLink(title, url) {
       if (!links.some(link => link.url === url)) {
         links.unshift({ 
@@ -67,7 +108,8 @@
           url: url, 
           date: new Date().toLocaleString('ko-KR'),
           liked: false,
-          category: '미분류' // 기본 카테고리
+          category: '미분류',
+          memo: '' // 메모 기능 추가!
         });
         saveToStorage();
       }
@@ -77,14 +119,18 @@
       localStorage.setItem('nitter_links', JSON.stringify(links));
     }
 
-    // 화면 그리기 로직
     function renderLinks() {
       const listDiv = document.getElementById('link-list');
       
-      // 필터링 (좋아요 누른 것만 보기)
+      // 1. 좋아요 필터 적용
       let displayLinks = showOnlyLiked ? links.filter(link => link.liked) : [...links];
 
-      // 정렬 (최신순 / 오래된순)
+      // 2. 카테고리 필터 적용
+      if (currentCategoryFilter !== 'all') {
+        displayLinks = displayLinks.filter(link => link.category === currentCategoryFilter);
+      }
+
+      // 3. 정렬 적용
       if (currentSort === 'old') {
         displayLinks.sort((a, b) => a.id - b.id);
       } else {
@@ -92,28 +138,69 @@
       }
       
       if(displayLinks.length === 0) {
-        listDiv.innerHTML = "<p style='color:#657786;'>표시할 링크가 없습니다.</p>";
+        listDiv.innerHTML = "<p style='color:#657786; text-align:center; padding: 30px 0;'>조건에 맞는 링크가 없습니다.</p>";
         return;
       }
 
-      listDiv.innerHTML = displayLinks.map(link => `
-        <div class="link-card">
-          <div class="card-header">
-            <span class="category-tag" onclick="editCategory(${link.id})">${link.category} ✏️</span>
-            <span class="date">${link.date}</span>
+      listDiv.innerHTML = displayLinks.map(link => {
+        // 카테고리 선택 드롭다운 HTML 생성
+        const categoryOptions = CATEGORIES.map(cat => 
+          `<option value="${cat}" ${link.category === cat ? 'selected' : ''}>${cat}</option>`
+        ).join('');
+
+        return `
+          <div class="link-card">
+            <div class="card-header">
+              <select class="category-select" onchange="changeCategory(${link.id}, this.value)">
+                ${categoryOptions}
+              </select>
+              <span class="date">${link.date}</span>
+            </div>
+            
+            <h3 class="title"><a href="${link.url}" target="_blank">${link.title}</a></h3>
+            
+            <div class="memo-box ${link.memo ? 'has-content' : ''}" onclick="editMemo(${link.id})">
+              ${link.memo ? link.memo : '✍️ 캡션을 추가하려면 클릭하세요 (예: 1분 30초 레전드)'}
+            </div>
+            
+            <div class="card-actions">
+              <button class="like-btn" onclick="toggleLike(${link.id})">
+                ${link.liked ? '❤️' : '🤍'}
+              </button>
+              <button class="delete-btn" onclick="deleteLink(${link.id})">삭제</button>
+            </div>
           </div>
-          <h3 class="title"><a href="${link.url}" target="_blank">${link.title !== '제목 없음' ? link.title : '새로운 Nitter 게시물 보기'}</a></h3>
-          <div class="card-actions">
-            <button class="like-btn" onclick="toggleLike(${link.id})">
-              ${link.liked ? '❤️' : '🤍'}
-            </button>
-            <button class="delete-btn" onclick="deleteLink(${link.id})">삭제</button>
-          </div>
-        </div>
-      `).join('');
+        `;
+      }).join('');
     }
 
-    // 좋아요 토글 기능
+    // 변경된 카테고리 저장
+    function changeCategory(id, newCategory) {
+      const index = links.findIndex(l => l.id === id);
+      if (index !== -1) {
+        links[index].category = newCategory;
+        saveToStorage();
+        // 전체보기가 아닐 때 분류를 바꾸면 리스트가 즉시 갱신되도록 렌더링
+        if(currentCategoryFilter !== 'all') renderLinks(); 
+      }
+    }
+
+    // 캡션(메모) 수정 기능
+    function editMemo(id) {
+      const index = links.findIndex(l => l.id === id);
+      if (index !== -1) {
+        const currentMemo = links[index].memo || '';
+        const newMemo = prompt("캡션을 입력하세요:", currentMemo);
+        
+        // 취소를 누르지 않았을 경우에만 저장 (빈칸으로 비우는 것도 가능하게 처리)
+        if (newMemo !== null) {
+          links[index].memo = newMemo.trim();
+          saveToStorage();
+          renderLinks();
+        }
+      }
+    }
+
     function toggleLike(id) {
       const index = links.findIndex(l => l.id === id);
       if (index !== -1) {
@@ -123,20 +210,6 @@
       }
     }
 
-    // 카테고리 수정 기능 (아이돌, 웃김, 혜윤 등 직접 입력)
-    function editCategory(id) {
-      const index = links.findIndex(l => l.id === id);
-      if (index !== -1) {
-        const newCat = prompt("카테고리를 입력하세요 (예: 아이돌, 웃김, 혜윤):", links[index].category);
-        if (newCat && newCat.trim() !== "") {
-          links[index].category = newCat.trim();
-          saveToStorage();
-          renderLinks();
-        }
-      }
-    }
-
-    // 링크 삭제
     function deleteLink(id) {
       if(confirm("이 링크를 삭제하시겠습니까?")) {
         links = links.filter(l => l.id !== id);
@@ -145,7 +218,6 @@
       }
     }
 
-    // 정렬 버튼 동작
     function setSort(type) {
       currentSort = type;
       document.getElementById('btn-new').classList.toggle('active', type === 'new');
@@ -153,10 +225,14 @@
       renderLinks();
     }
 
-    // 좋아요 필터 버튼 동작
     function toggleLikedFilter() {
       showOnlyLiked = !showOnlyLiked;
       document.getElementById('btn-like').classList.toggle('active', showOnlyLiked);
+      renderLinks();
+    }
+
+    function setCategoryFilter(category) {
+      currentCategoryFilter = category;
       renderLinks();
     }
   </script>
