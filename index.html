@@ -83,11 +83,15 @@
         if (urlMatch) finalUrl = urlMatch[0];
       }
 
+      // ⭐️ 핵심 추가 내용: nitter.net을 x.com으로 강제 변환!
+      if (finalUrl.includes('nitter.net')) {
+        finalUrl = finalUrl.replace('nitter.net', 'x.com');
+      }
+
       let rawText = sharedText || sharedTitleParam || '';
       let finalTitle = rawText.replace(/https?:\/\/[^\s]+/g, '').trim();
-      let needsAutoFetch = false; // 제목을 자동으로 긁어올지 여부
+      let needsAutoFetch = false; 
 
-      // 앱에서 글 내용(텍스트)을 안 줬을 경우!
       if (finalTitle === '' || finalTitle === '제목 없음') {
         finalTitle = '⏳ 제목을 불러오는 중...';
         needsAutoFetch = true;
@@ -98,7 +102,6 @@
         saveLink(newId, finalTitle, finalUrl);
         window.history.replaceState({}, document.title, window.location.pathname);
         
-        // 글 내용이 없었다면 프록시(로봇)를 시켜서 제목을 긁어옵니다.
         if (needsAutoFetch) {
           fetchTitleFromUrl(finalUrl, newId);
         }
@@ -107,10 +110,8 @@
       renderLinks();
     });
 
-    // 외부 사이트에서 제목을 몰래 가져오는 마법의 함수
     async function fetchTitleFromUrl(url, id) {
       try {
-        // 무료 우회(Proxy) 서버를 이용해 해당 주소의 HTML 내용을 훔쳐옵니다.
         const response = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`);
         const data = await response.json();
         
@@ -118,7 +119,6 @@
           const doc = new DOMParser().parseFromString(data.contents, "text/html");
           let pageTitle = doc.querySelector('title') ? doc.querySelector('title').innerText : '';
           
-          // 쓸데없는 공백 지우고, 50자가 넘으면 뒤를 '...'으로 자름 (앞부분만 깔끔하게!)
           pageTitle = pageTitle.replace(/\n/g, ' ').trim();
           if (pageTitle.length > 50) {
             pageTitle = pageTitle.substring(0, 50) + '...';
@@ -129,19 +129,17 @@
             if (index !== -1) {
               links[index].title = pageTitle;
               saveToStorage();
-              renderLinks(); // 화면을 새 제목으로 짠! 하고 바꿈
+              renderLinks(); 
             }
           } else {
             fallbackTitle(id);
           }
         }
       } catch (error) {
-        console.error('타이틀 긁어오기 실패:', error);
         fallbackTitle(id);
       }
     }
 
-    // 긁어오기에 실패했을 때 보여줄 텍스트
     function fallbackTitle(id) {
       const index = links.findIndex(l => l.id === id);
       if (index !== -1) {
@@ -172,7 +170,8 @@
 
     function getPlatformInfo(url) {
       const lowerUrl = url.toLowerCase();
-      if (lowerUrl.includes('nitter') || lowerUrl.includes('twitter.com') || lowerUrl.includes('x.com')) return { name: '🐦 Nitter', color: '#1da1f2' };
+      // x.com 으로 변환되었기 때문에 '🐦 X (Twitter)'로 뱃지 이름도 통일감을 줬습니다!
+      if (lowerUrl.includes('nitter') || lowerUrl.includes('twitter.com') || lowerUrl.includes('x.com')) return { name: '🐦 X (Twitter)', color: '#1da1f2' };
       if (lowerUrl.includes('instagram.com')) return { name: '📸 인스타', color: '#E1306C' };
       if (lowerUrl.includes('theqoo.net')) return { name: '🦆 더쿠', color: '#333333' };
       if (lowerUrl.includes('fmkorea.com')) return { name: '⚽ 펨코', color: '#144288' };
