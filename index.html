@@ -67,7 +67,7 @@
 
       // 제목 결정 로직 단순화
       let finalTitle = (sharedText || sharedTitleParam || '').replace(/https?:\/\/[^\s]+/g, '').trim();
-      if (!finalTitle) finalTitle = '📸 새로운 기록';
+      if (!finalTitle) finalTitle = '^3^ 기록이 쌓이는 중 ^3^';
 
       if (finalUrl && finalUrl.startsWith('http')) {
         if (!links.some(link => link.url === finalUrl)) {
