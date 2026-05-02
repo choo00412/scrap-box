@@ -6,7 +6,7 @@
   "background_color": "#f5f8fa",
   "theme_color": "#1da1f2",
   "share_target": {
-    "action": "/",
+    "action": "/scrap-box/",
     "method": "GET",
     "params": {
       "title": "title",
