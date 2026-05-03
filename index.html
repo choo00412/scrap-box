@@ -20,10 +20,10 @@
 
     /* --- [상단 컨트롤러] --- */
     .controls { display: flex; gap: 5px; margin-bottom: 12px; flex-wrap: wrap; }
-    button, .filter-select { padding: 6px 10px; border: none; border-radius: 12px; background-color: #e1e8ed; cursor: pointer; font-size: 11px; font-weight: bold; color: var(--text-main); outline: none; }
+    button, .filter-select { padding: 6px 10px; border: none; border-radius: 12px; background-color: #e1e8ed; cursor: pointer; font-size: 11px; font-weight: bold; color: var(--text-main); outline: none; -webkit-tap-highlight-color: transparent; }
     button.active { background-color: var(--primary-color); color: white; }
 
-    /* --- [보관함 그리드 - 크기 대폭 축소] --- */
+    /* --- [보관함 그리드] --- */
     #link-list, #gallery-list { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
     
     .link-card { background: var(--card-bg); border: 1px solid #e1e8ed; padding: 10px; border-radius: 10px; display: flex; flex-direction: column; justify-content: space-between; min-height: 120px; min-width: 0; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
@@ -55,7 +55,7 @@
 
     /* --- [갤러리 & 일기장] --- */
     .folder-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-    .folder-card { background: white; border: 1px solid #e1e8ed; border-radius: 10px; padding: 12px 5px; text-align: center; cursor: pointer; }
+    .folder-card { background: white; border: 1px solid #e1e8ed; border-radius: 10px; padding: 12px 5px; text-align: center; cursor: pointer; -webkit-tap-highlight-color: transparent; }
     .folder-icon { font-size: 24px; margin-bottom: 5px; }
     .folder-name { font-size: 11px; font-weight: bold; }
     .folder-count { font-size: 9px; color: var(--text-sub); margin-top:3px; }
@@ -65,15 +65,19 @@
     .diary-textarea { width: 100%; height: 60px; border: none; outline: none; font-size: 12px; resize: none; font-family: inherit; }
     .diary-actions { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; border-top: 1px dashed #e1e8ed; padding-top: 8px; }
     .photo-preview { width: 50px; height: 50px; border-radius: 8px; object-fit: cover; display: none; border: 1px solid #e1e8ed; }
-    .diary-card { background: white; border: 1px solid #e1e8ed; padding: 12px; margin-bottom: 10px; border-radius: 10px; cursor: pointer; }
+    .diary-card { background: white; border: 1px solid #e1e8ed; padding: 12px; margin-bottom: 10px; border-radius: 10px; cursor: pointer; -webkit-tap-highlight-color: transparent; }
     .diary-img { width: 100%; border-radius: 8px; margin-bottom: 8px; max-height: 200px; object-fit: cover; }
 
-    /* --- [하단 네비게이션] --- */
+    /* --- [하단 네비게이션 - 밑줄 방식 변경] --- */
     .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: white; border-top: 1px solid #e1e8ed; display: flex; height: 55px; z-index: 1000; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); }
-    .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; background: none; border: none; border-bottom: 3px solid transparent; cursor: pointer; color: var(--text-sub); font-size: 10px; font-weight: bold; gap: 3px; padding-bottom: 2px; transition: 0.2s; }
-    .nav-item.active { color: var(--primary-color); border-bottom-color: var(--primary-color); }
+    /* 버튼 자체의 배경색 터치 효과를 투명하게 없앰 */
+    .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; background: transparent; border: none; cursor: pointer; color: var(--text-sub); font-size: 10px; font-weight: bold; gap: 3px; transition: 0.2s; -webkit-tap-highlight-color: transparent; }
     .nav-icon { font-size: 16px; filter: grayscale(1); }
+    .nav-text { border-bottom: 2px solid transparent; padding-bottom: 2px; transition: 0.2s; }
+    /* 활성화 시 아이콘 색상 복구 및 글씨 아래 얇은 밑줄 */
+    .nav-item.active { color: var(--primary-color); }
     .nav-item.active .nav-icon { filter: grayscale(0); }
+    .nav-item.active .nav-text { border-bottom-color: var(--primary-color); }
   </style>
 </head>
 <body>
@@ -94,7 +98,7 @@
   <div id="tab-archive" class="tab-content active">
     <div class="controls">
       <button id="btn-new" class="active" onclick="setSort('new')">최신</button>
-      <button id="btn-shuffle" onclick="setSort('shuffle')"> 랜덤 </button>
+      <button id="btn-shuffle" onclick="setSort('shuffle')">🔀 랜덤</button>
       <button id="f-❤️" onclick="toggleReactionFilter('❤️')">❤️</button>
       <button id="f-👍" onclick="toggleReactionFilter('👍')">👍</button>
       <button id="f-🐐" onclick="toggleReactionFilter('🐐')">🐐</button>
@@ -120,12 +124,32 @@
 
   <!-- 탭 3: 일기장 -->
   <div id="tab-diary" class="tab-content">
+    <!-- 일기장 상단 필터 -->
+    <div class="controls" style="margin-bottom: 10px;">
+      <select id="diary-filter" class="filter-select" onchange="setDiaryFilter(this.value)" style="border: 1px solid var(--primary-color); color: var(--primary-color); background: white;">
+        <option value="all">📁 모든 일기 보기</option>
+        <option value="일상">일상</option>
+        <option value="타쿠">타쿠</option>
+        <option value="벨">벨</option>
+        <option value="병">병</option>
+      </select>
+    </div>
+
+    <!-- 일기 작성 영역 -->
     <div class="diary-input-area">
+      <!-- 일기 분류 선택 -->
+      <select id="diary-category-input" class="filter-select" style="padding: 4px 8px; font-size: 10px; margin-bottom: 8px;">
+        <option value="일상">일상</option>
+        <option value="타쿠">타쿠</option>
+        <option value="벨">벨</option>
+        <option value="병">병</option>
+      </select>
       <textarea id="diary-input" class="diary-textarea" placeholder="다 적엉 ^_^"></textarea>
+      
       <div class="diary-actions">
         <input type="file" id="diary-photo" accept="image/*" style="display:none" onchange="previewPhoto(this)">
         <div style="display:flex; gap:8px; align-items:center;">
-          <button onclick="document.getElementById('diary-photo').click()" style="background:#e1e8ed; padding:5px 10px; border-radius:10px;">이미지</button>
+          <button onclick="document.getElementById('diary-photo').click()" style="background:#e1e8ed; padding:5px 10px; border-radius:10px;">🖼️ 이미지</button>
           <img id="p-preview" class="photo-preview">
         </div>
         <button onclick="saveDiary()" style="background:var(--primary-color); color:white; border-radius:10px; padding:6px 14px; border:none; font-weight:bold;">저장✍️</button>
@@ -137,13 +161,13 @@
   <!-- 하단 네비게이션 -->
   <nav class="bottom-nav">
     <button id="nav-archive" class="nav-item active" onclick="switchTab('archive')">
-      <span class="nav-icon">📦</span><span>보관함</span>
+      <span class="nav-icon">📦</span><span class="nav-text">보관함</span>
     </button>
     <button id="nav-gallery" class="nav-item" onclick="switchTab('gallery')">
-      <span class="nav-icon">📁</span><span>갤러리</span>
+      <span class="nav-icon">📁</span><span class="nav-text">갤러리</span>
     </button>
     <button id="nav-diary" class="nav-item" onclick="switchTab('diary')">
-      <span class="nav-icon">📝</span><span>일기장</span>
+      <span class="nav-icon">📝</span><span class="nav-text">일기장</span>
     </button>
   </nav>
 
@@ -151,18 +175,18 @@
     let links = JSON.parse(localStorage.getItem('nitter_links')) || [];
     let diaries = JSON.parse(localStorage.getItem('choo_diaries')) || [];
     let currentSort = 'new', currentReactionFilter = '', currentCategoryFilter = 'all';
+    let currentDiaryFilter = 'all'; // 일기장 전용 필터
     let tempPhoto = '';
     let shuffledOrder = []; 
     const CATEGORIES = ['미분류', '재희', '혜윤', '벨', '웃김', '정보', '위시', '연예계'];
 
-    // ⭐️ [초강력 세탁기] 어떤 형태의 nitter 주소든, twitter.com이든 모두 x.com으로 강제 통일
+    // x.com 강제 통일 함수
     function convertUrl(url) {
       if (!url) return '';
       return url.replace(/nitter\.[a-z]+/gi, 'x.com').replace('twitter.com', 'x.com');
     }
 
     window.addEventListener('DOMContentLoaded', () => {
-      // 1. 기존 데이터 강제 세탁 (이미 저장된 것도 싹 다 x.com으로 바꿈)
       let isUpdated = false;
       links = links.map(l => {
         const newUrl = convertUrl(l.url);
@@ -171,13 +195,11 @@
       });
       if(isUpdated) localStorage.setItem('nitter_links', JSON.stringify(links));
 
-      // 2. 외부에서 공유받아 들어온 데이터 철저하게 추적 후 세탁
       const urlParams = new URLSearchParams(window.location.search);
       let sharedUrl = urlParams.get('url') || '';
       let sharedText = urlParams.get('text') || '';
       let sharedTitle = urlParams.get('title') || '';
       
-      // 안드로이드가 텍스트나 제목 칸에 링크를 몰래 숨겨놨을 경우를 대비한 추적 코드
       let extractedUrl = sharedUrl;
       if (!extractedUrl) {
         const match = (sharedText + ' ' + sharedTitle).match(/https?:\/\/[^\s]+/);
@@ -185,9 +207,8 @@
       }
 
       if (extractedUrl) {
-        extractedUrl = convertUrl(extractedUrl); // 무조건 x.com 변환
+        extractedUrl = convertUrl(extractedUrl); 
         
-        // 중복 체크 로직
         if (!links.some(l => l.url === extractedUrl)) {
           let title = sharedText.replace(/https?:\/\/[^\s]+/g, '').trim() || '^3^ 기록중';
           links.unshift({ id: Date.now(), title: title, url: extractedUrl, date: new Date().toLocaleDateString(), reaction: '', category: '미분류', memo: '' });
@@ -211,9 +232,8 @@
       let pName = '링크', pColor = '#888';
       if (u.includes('x.com')) { pName = 'X'; pColor = '#000'; }
       else if (u.includes('instagram')) { pName = '인스타'; pColor = '#E1306C'; }
-      else if (u.includes('theqoo')) { pName = '더쿠'; pColor = '#333'; }
+      else if (u.includes('theqoo')) { pName = '티쿵'; pColor = '#333'; }
 
-      // ⭐️ 이제 viewUrl 꼼수 없이, 무조건 저장된 x.com 링크 원본 그대로 열립니다!
       return `
         <div class="link-card">
           <div>
@@ -254,8 +274,11 @@
 
     function saveDiary() {
       const content = document.getElementById('diary-input').value.trim();
+      const category = document.getElementById('diary-category-input').value; // 선택한 분류 가져오기
       if (!content && !tempPhoto) return;
-      diaries.unshift({ id: Date.now(), date: new Date().toLocaleString(), content, photo: tempPhoto });
+      
+      // 일기 저장할 때 category 추가
+      diaries.unshift({ id: Date.now(), date: new Date().toLocaleString(), content: content, photo: tempPhoto, category: category });
       localStorage.setItem('choo_diaries', JSON.stringify(diaries));
       
       document.getElementById('diary-input').value = '';
@@ -264,11 +287,26 @@
       tempPhoto = ''; renderDiaries();
     }
 
+    // 일기장 필터 함수
+    function setDiaryFilter(cat) {
+      currentDiaryFilter = cat;
+      renderDiaries();
+    }
+
     function renderDiaries() {
-      document.getElementById('diary-list').innerHTML = diaries.map(d => `
+      // 선택된 필터에 맞춰 일기 목록 추려내기
+      let filteredDiaries = diaries;
+      if (currentDiaryFilter !== 'all') {
+        filteredDiaries = filteredDiaries.filter(d => (d.category || '일상') === currentDiaryFilter);
+      }
+
+      document.getElementById('diary-list').innerHTML = filteredDiaries.map(d => `
         <div class="diary-card" onclick="openDiaryModal(${d.id})">
-          <div style="font-size:10px; color:#aaa; margin-bottom:6px; display:flex; justify-content:space-between;">
-            <span>${d.date}</span>
+          <div style="font-size:10px; color:#aaa; margin-bottom:6px; display:flex; justify-content:space-between; align-items:center;">
+            <div>
+              <span class="platform-badge" style="background-color:var(--primary-color); font-size:8px; margin-right:4px; border-radius:4px;">${d.category || '일상'}</span>
+              <span>${d.date}</span>
+            </div>
             <button class="delete-btn" onclick="event.stopPropagation(); deleteDiary(${d.id})">삭제</button>
           </div>
           ${d.photo ? `<img src="${d.photo}" class="diary-img">` : ''}
@@ -279,7 +317,8 @@
 
     function openDiaryModal(id) {
       const d = diaries.find(item => item.id === id);
-      document.getElementById('dm-date').innerText = d.date;
+      // 모달창에서도 어떤 분류인지 볼 수 있게 추가
+      document.getElementById('dm-date').innerHTML = `<span style="color:var(--primary-color); font-weight:bold; margin-right:5px;">[${d.category || '일상'}]</span>${d.date}`;
       document.getElementById('dm-content').innerText = d.content;
       const photoEl = document.getElementById('dm-photo');
       if (d.photo) { photoEl.src = d.photo; photoEl.style.display = 'block'; } 
@@ -308,7 +347,7 @@
     function renderGalleryFolders() {
       document.getElementById('gallery-folders').innerHTML = CATEGORIES.map(cat => {
         let icon = '📁';
-        if(cat === '미분류') icon = '📦'; else if(cat === '위시') icon = '🛒'; else if(cat === '웃김') icon = '🤣'; else if(cat === '정보') icon = '💡';
+        if(cat === '미분류') icon = '📦'; else if(cat === '위시') icon = '⭐'; else if(cat === '웃김') icon = '😸'; else if(cat === '정보') icon = '💡';
         return `
           <div class="folder-card" onclick="openFolder('${cat}')">
             <div class="folder-icon">${icon}</div>
@@ -326,7 +365,6 @@
     }
     function closeFolder() { document.getElementById('gallery-items').style.display = 'none'; document.getElementById('gallery-folders').style.display = 'grid'; }
 
-    /* --- [이벤트 함수들] --- */
     function setSort(type) { 
       currentSort = type; 
       document.getElementById('btn-new').classList.toggle('active', type === 'new');
