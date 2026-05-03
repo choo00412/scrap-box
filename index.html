@@ -6,11 +6,20 @@
   <title>choo 보관함</title>
   <link rel="manifest" href="manifest.json">
   <style>
-    body { font-family: 'Segoe UI', sans-serif; padding: 15px; max-width: 500px; margin: 0 auto; background-color: #f5f8fa; }
+    /* 하단바 때문에 하단 여백 추가 */
+    body { font-family: 'Segoe UI', sans-serif; padding: 15px; padding-bottom: 80px; max-width: 500px; margin: 0 auto; background-color: #f5f8fa; }
     h1 { color: #1da1f2; font-size: 20px; font-weight: 800; margin-bottom: 15px; }
+    
+    /* 탭 화면 전환용 */
+    .tab-content { display: none; animation: fadeIn 0.3s; }
+    .tab-content.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    /* --- [1번 탭] 보관함 스타일 --- */
     .controls { display: flex; gap: 5px; margin-bottom: 15px; flex-wrap: wrap; align-items: center; }
     button, .filter-select { padding: 6px 10px; border: none; border-radius: 15px; background-color: #e1e8ed; cursor: pointer; font-size: 12px; font-weight: bold; color: #14171a; }
     button.active { background-color: #1da1f2; color: white; }
+    
     .link-card { background: white; border: 1px solid #e1e8ed; padding: 12px; margin-bottom: 8px; border-radius: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
     .card-top-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
     .platform-badge { padding: 2px 6px; border-radius: 5px; font-size: 10px; font-weight: bold; color: white; }
@@ -25,38 +34,118 @@
     .react-btn.active { filter: grayscale(0); transform: scale(1.2); opacity: 1; }
     .delete-btn { font-size: 11px; color: #aab8c2; background: none; border: none; cursor: pointer; }
     .date { font-size: 10px; color: #aab8c2; }
+
+    /* --- [2번 탭] 갤러리 그룹 스타일 --- */
+    .folder-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .folder-card { background: white; border: 1px solid #e1e8ed; border-radius: 12px; padding: 15px 5px; text-align: center; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.03); transition: 0.2s; }
+    .folder-card:active { transform: scale(0.95); }
+    .folder-icon { font-size: 32px; margin-bottom: 5px; }
+    .folder-name { font-size: 13px; font-weight: bold; color: #14171a; }
+    .folder-count { font-size: 11px; color: #657786; margin-top: 3px; }
+    .gallery-header { display: flex; align-items: center; gap: 10px; margin-bottom: 15px; }
+    .back-btn { background: #e1e8ed; border: none; padding: 6px 12px; border-radius: 15px; font-weight: bold; cursor: pointer; font-size: 12px; }
+
+    /* --- [3번 탭] 일기장 스타일 --- */
+    .diary-input-area { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
+    .diary-textarea { width: 100%; height: 80px; padding: 12px; border-radius: 12px; border: 1px solid #cbd6e2; resize: none; font-family: inherit; font-size: 13px; box-sizing: border-box; outline: none; }
+    .diary-textarea:focus { border-color: #1da1f2; }
+    .diary-submit-btn { background-color: #1da1f2; color: white; border: none; padding: 10px; border-radius: 12px; font-weight: bold; cursor: pointer; font-size: 14px; }
+    .diary-card { background: white; border: 1px solid #e1e8ed; padding: 15px; margin-bottom: 10px; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.02); }
+    .diary-content { font-size: 14px; line-height: 1.5; color: #14171a; white-space: pre-wrap; margin-top: 5px; }
+
+    /* --- 📱 하단 네비게이션 바 --- */
+    .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: white; border-top: 1px solid #e1e8ed; display: flex; justify-content: space-around; padding: 10px 0; padding-bottom: env(safe-area-inset-bottom, 15px); z-index: 1000; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); }
+    .nav-item { display: flex; flex-direction: column; align-items: center; background: none; border: none; cursor: pointer; color: #657786; font-size: 11px; font-weight: bold; gap: 4px; transition: 0.2s; }
+    .nav-item.active { color: #1da1f2; }
+    .nav-icon { font-size: 20px; filter: grayscale(1); opacity: 0.6; }
+    .nav-item.active .nav-icon { filter: grayscale(0); opacity: 1; }
   </style>
 </head>
 <body>
   <h1>📥 choo 보관함</h1>
-  <div class="controls">
-    <button id="btn-new" class="active" onclick="setSort('new')">최신순</button>
-    <button id="filter-heart" onclick="toggleReactionFilter('❤️')">❤️</button>
-    <button id="filter-thumb" onclick="toggleReactionFilter('👍')">👍</button>
-    <button id="filter-goat" onclick="toggleReactionFilter('🐐')">🐐</button>
-    <button id="filter-yahoi" onclick="toggleReactionFilter('🤩')">🤩</button>
-    <select id="category-filter" class="filter-select" onchange="setCategoryFilter(this.value)">
-      <option value="all">전체 분류</option>
-      <option value="재희">재희</option>
-      <option value="혜윤">혜윤</option>
-      <option value="벨">벨</option>
-      <option value="웃김">웃김</option>
-      <option value="정보">정보</option>
-      <option value="위시">위시</option>
-      <option value="연예계">연예계</option>
-      <option value="미분류">미분류</option>
-    </select>
+
+  <!-- 탭 1: 기존 보관함 -->
+  <div id="tab-archive" class="tab-content active">
+    <div class="controls">
+      <button id="btn-new" class="active" onclick="setSort('new')">최신순</button>
+      <button id="filter-heart" onclick="toggleReactionFilter('❤️')">❤️</button>
+      <button id="filter-thumb" onclick="toggleReactionFilter('👍')">👍</button>
+      <button id="filter-goat" onclick="toggleReactionFilter('🐐')">🐐</button>
+      <button id="filter-yahoi" onclick="toggleReactionFilter('🤩')">🤩</button>
+      <select id="category-filter" class="filter-select" onchange="setCategoryFilter(this.value)">
+        <option value="all">전체 분류</option>
+        <option value="재희">재희</option>
+        <option value="혜윤">혜윤</option>
+        <option value="벨">벨</option>
+        <option value="웃김">웃김</option>
+        <option value="정보">정보</option>
+        <option value="위시">위시</option>
+        <option value="연예계">연예계</option>
+        <option value="미분류">미분류</option>
+      </select>
+    </div>
+    <div id="link-list"></div>
   </div>
-  <div id="link-list"></div>
+
+  <!-- 탭 2: 갤러리 (폴더 그룹) -->
+  <div id="tab-gallery" class="tab-content">
+    <!-- 폴더 목록 화면 -->
+    <div id="gallery-folders" class="folder-grid"></div>
+    <!-- 폴더 안의 내용 화면 -->
+    <div id="gallery-items" style="display: none;">
+      <div class="gallery-header">
+        <button class="back-btn" onclick="closeFolder()">🔙 뒤로</button>
+        <h2 id="gallery-title" style="margin:0; font-size:18px; color:#14171a;"></h2>
+      </div>
+      <div id="gallery-list"></div>
+    </div>
+  </div>
+
+  <!-- 탭 3: 일기장 & 메모 -->
+  <div id="tab-diary" class="tab-content">
+    <div class="diary-input-area">
+      <textarea id="diary-input" class="diary-textarea" placeholder="오늘 덕질하면서 느낀 감정이나 메모를 적어보세요!"></textarea>
+      <button class="diary-submit-btn" onclick="saveDiary()">기록하기 ✍️</button>
+    </div>
+    <div id="diary-list"></div>
+  </div>
+
+  <!-- 하단 네비게이션 바 -->
+  <nav class="bottom-nav">
+    <button id="nav-archive" class="nav-item active" onclick="switchTab('archive')">
+      <span class="nav-icon">📦</span>
+      <span>보관함</span>
+    </button>
+    <button id="nav-gallery" class="nav-item" onclick="switchTab('gallery')">
+      <span class="nav-icon">📁</span>
+      <span>갤러리</span>
+    </button>
+    <button id="nav-diary" class="nav-item" onclick="switchTab('diary')">
+      <span class="nav-icon">📝</span>
+      <span>일기장</span>
+    </button>
+  </nav>
 
   <script>
+    /* --- 기본 데이터 세팅 --- */
     let links = JSON.parse(localStorage.getItem('nitter_links')) || [];
+    let diaries = JSON.parse(localStorage.getItem('choo_diaries')) || []; // 일기장 데이터
+    
     let currentSort = 'new';
     let currentReactionFilter = '';
     let currentCategoryFilter = 'all';
     const CATEGORIES = ['미분류', '재희', '혜윤', '벨', '웃김', '정보', '위시', '연예계'];
 
+    // 공유 받았을 때 로직 (x.com 변환 등 기존 기능 유지)
     window.addEventListener('DOMContentLoaded', () => {
+      let isUpdated = false;
+      links = links.map(link => {
+        if (link.url.includes('nitter.net')) { link.url = link.url.replace('nitter.net', 'x.com'); isUpdated = true; }
+        if (link.reaction === undefined) { link.reaction = link.liked ? '❤️' : ''; isUpdated = true; }
+        return link;
+      });
+      if (isUpdated) saveToStorage();
+      
       const urlParams = new URLSearchParams(window.location.search);
       const sharedUrl = urlParams.get('url');
       const sharedText = urlParams.get('text');
@@ -65,7 +154,6 @@
       let finalUrl = sharedUrl || (sharedText && sharedText.match(/https?:\/\/[^\s]+/)?.[0]) || '';
       if (finalUrl.includes('nitter.net')) finalUrl = finalUrl.replace('nitter.net', 'x.com');
 
-      // 제목 결정 로직 단순화
       let finalTitle = (sharedText || sharedTitleParam || '').replace(/https?:\/\/[^\s]+/g, '').trim();
       if (!finalTitle) finalTitle = '^3^ 기록이 쌓이는 중 ^3^';
 
@@ -80,9 +168,24 @@
         }
         window.history.replaceState({}, document.title, window.location.pathname);
       }
-      renderLinks();
+      
+      // 앱을 처음 켤 때 모든 탭 렌더링
+      updateAllViews();
     });
 
+    /* --- 하단 탭 전환 로직 --- */
+    function switchTab(tabName) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+      
+      document.getElementById(`tab-${tabName}`).classList.add('active');
+      document.getElementById(`nav-${tabName}`).classList.add('active');
+
+      if (tabName === 'gallery') renderGalleryFolders();
+      if (tabName === 'diary') renderDiaries();
+    }
+
+    /* --- [1] 보관함 기능 --- */
     function getPlatformInfo(url) {
       const u = url.toLowerCase();
       if (u.includes('x.com') || u.includes('twitter')) return { name: 'X', color: '#000' };
@@ -92,6 +195,40 @@
       return { name: '링크', color: '#888' };
     }
 
+    // 카드 HTML을 만들어주는 공통 함수 (보관함, 갤러리 둘 다 사용)
+    function generateCardHTML(link) {
+      const platform = getPlatformInfo(link.url);
+      let viewUrl = link.url;
+      if (viewUrl.includes('x.com')) viewUrl = viewUrl.replace('x.com', 'nitter.net');
+
+      return `
+        <div class="link-card">
+          <div class="card-top-row">
+            <span class="platform-badge" style="background-color: ${platform.color};">${platform.name}</span>
+            <select class="category-select" onchange="changeCategory(${link.id}, this.value)">
+              ${CATEGORIES.map(c => `<option value="${c}" ${link.category === c ? 'selected' : ''}>${c}</option>`).join('')}
+            </select>
+          </div>
+          <h3 class="title"><a href="${viewUrl}" target="_blank">${link.title}</a></h3>
+          <div class="memo-box ${link.memo ? 'has-content' : ''}" onclick="editMemo(${link.id})">
+            ${link.memo ? link.memo : '캡션^3^'}
+          </div>
+          <div class="card-footer">
+            <div class="reaction-group">
+              <button class="react-btn ${link.reaction === '❤️' ? 'active' : ''}" onclick="setReaction(${link.id}, '❤️')">❤️</button>
+              <button class="react-btn ${link.reaction === '👍' ? 'active' : ''}" onclick="setReaction(${link.id}, '👍')">👍</button>
+              <button class="react-btn ${link.reaction === '🐐' ? 'active' : ''}" onclick="setReaction(${link.id}, '🐐')">🐐</button>
+              <button class="react-btn ${link.reaction === '🤩' ? 'active' : ''}" onclick="setReaction(${link.id}, '🤩')">🤩</button>
+            </div>
+            <div>
+              <span class="date" style="margin-right:5px;">${link.date}</span>
+              <button class="delete-btn" onclick="deleteLink(${link.id})">삭제</button>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
     function renderLinks() {
       const listDiv = document.getElementById('link-list');
       let displayLinks = [...links];
@@ -99,44 +236,100 @@
       if (currentCategoryFilter !== 'all') displayLinks = displayLinks.filter(l => l.category === currentCategoryFilter);
       displayLinks.sort((a, b) => currentSort === 'new' ? b.id - a.id : a.id - b.id);
       
-      listDiv.innerHTML = displayLinks.map(link => {
-        const platform = getPlatformInfo(link.url);
-        let viewUrl = link.url;
-        if (viewUrl.includes('x.com')) viewUrl = viewUrl.replace('x.com', 'nitter.net');
+      listDiv.innerHTML = displayLinks.map(generateCardHTML).join('');
+    }
 
+    /* --- [2] 갤러리 기능 --- */
+    function renderGalleryFolders() {
+      const folderGrid = document.getElementById('gallery-folders');
+      folderGrid.innerHTML = CATEGORIES.map(cat => {
+        const count = links.filter(l => l.category === cat).length;
+        // 그룹별 아이콘 다르게 설정
+        let icon = '📁';
+        if(cat === '미분류') icon = '📦';
+        else if(cat === '위시') icon = '🛒';
+        else if(cat === '웃김') icon = '🤣';
+        else if(cat === '정보') icon = '💡';
+        
         return `
-          <div class="link-card">
-            <div class="card-top-row">
-              <span class="platform-badge" style="background-color: ${platform.color};">${platform.name}</span>
-              <select class="category-select" onchange="changeCategory(${link.id}, this.value)">
-                ${CATEGORIES.map(c => `<option value="${c}" ${link.category === c ? 'selected' : ''}>${c}</option>`).join('')}
-              </select>
-            </div>
-            <h3 class="title"><a href="${viewUrl}" target="_blank">${link.title}</a></h3>
-            <div class="memo-box ${link.memo ? 'has-content' : ''}" onclick="editMemo(${link.id})">
-              ${link.memo ? link.memo : '캡션^3^'}
-            </div>
-            <div class="card-footer">
-              <div class="reaction-group">
-                <button class="react-btn ${link.reaction === '❤️' ? 'active' : ''}" onclick="setReaction(${link.id}, '❤️')">❤️</button>
-                <button class="react-btn ${link.reaction === '👍' ? 'active' : ''}" onclick="setReaction(${link.id}, '👍')">👍</button>
-                <button class="react-btn ${link.reaction === '🐐' ? 'active' : ''}" onclick="setReaction(${link.id}, '🐐')">🐐</button>
-                <button class="react-btn ${link.reaction === '🤩' ? 'active' : ''}" onclick="setReaction(${link.id}, '🤩')">🤩</button>
-              </div>
-              <div>
-                <span class="date" style="margin-right:5px;">${link.date}</span>
-                <button class="delete-btn" onclick="deleteLink(${link.id})">삭제</button>
-              </div>
-            </div>
+          <div class="folder-card" onclick="openFolder('${cat}')">
+            <div class="folder-icon">${icon}</div>
+            <div class="folder-name">${cat}</div>
+            <div class="folder-count">${count}개 보관됨</div>
           </div>
         `;
       }).join('');
     }
 
+    function openFolder(category) {
+      document.getElementById('gallery-folders').style.display = 'none';
+      document.getElementById('gallery-items').style.display = 'block';
+      document.getElementById('gallery-title').innerText = `📁 ${category}`;
+      
+      const filteredLinks = links.filter(l => l.category === category);
+      document.getElementById('gallery-list').innerHTML = filteredLinks.length > 0 
+        ? filteredLinks.map(generateCardHTML).join('') 
+        : '<p style="text-align:center; color:#657786; margin-top:30px;">아직 스크랩한 글이 없습니다.</p>';
+    }
+
+    function closeFolder() {
+      document.getElementById('gallery-items').style.display = 'none';
+      document.getElementById('gallery-folders').style.display = 'grid';
+      renderGalleryFolders();
+    }
+
+    /* --- [3] 일기장 기능 --- */
+    function saveDiary() {
+      const input = document.getElementById('diary-input');
+      const content = input.value.trim();
+      if (!content) return;
+      
+      diaries.unshift({ id: Date.now(), date: new Date().toLocaleString('ko-KR'), content: content });
+      localStorage.setItem('choo_diaries', JSON.stringify(diaries));
+      input.value = '';
+      renderDiaries();
+    }
+
+    function renderDiaries() {
+      const list = document.getElementById('diary-list');
+      list.innerHTML = diaries.map(d => `
+        <div class="diary-card">
+          <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #f0f2f5; padding-bottom:5px;">
+            <span class="date">${d.date}</span>
+            <button class="delete-btn" onclick="deleteDiary(${d.id})">삭제</button>
+          </div>
+          <div class="diary-content">${d.content}</div>
+        </div>
+      `).join('');
+    }
+
+    function deleteDiary(id) {
+      if(confirm("이 기록을 지울까요?")) {
+        diaries = diaries.filter(d => d.id !== id);
+        localStorage.setItem('choo_diaries', JSON.stringify(diaries));
+        renderDiaries();
+      }
+    }
+
+    /* --- 공통 업데이트 로직 --- */
+    // 보관함이나 갤러리에서 액션이 일어났을 때 현재 보고 있는 화면을 갱신해주는 똑똑한 함수
+    function updateAllViews() {
+      renderLinks();
+      // 만약 갤러리 탭이 열려있다면 갤러리도 업데이트
+      if (document.getElementById('tab-gallery').classList.contains('active')) {
+        if (document.getElementById('gallery-items').style.display === 'block') {
+          const currentCat = document.getElementById('gallery-title').innerText.replace('📁 ', '');
+          openFolder(currentCat);
+        } else {
+          renderGalleryFolders();
+        }
+      }
+    }
+
     function setReaction(id, emoji) {
       const index = links.findIndex(l => l.id === id);
       links[index].reaction = links[index].reaction === emoji ? '' : emoji;
-      saveToStorage(); renderLinks();
+      saveToStorage(); updateAllViews();
     }
 
     function toggleReactionFilter(emoji) {
@@ -145,25 +338,27 @@
       document.getElementById('filter-thumb').classList.toggle('active', currentReactionFilter === '👍');
       document.getElementById('filter-goat').classList.toggle('active', currentReactionFilter === '🐐');
       document.getElementById('filter-yahoi').classList.toggle('active', currentReactionFilter === '🤩');
-      renderLinks();
+      updateAllViews();
     }
 
     function editMemo(id) {
       const index = links.findIndex(l => l.id === id);
       const newMemo = prompt("캡션 작성", links[index].memo);
-      if (newMemo !== null) { links[index].memo = newMemo.trim(); saveToStorage(); renderLinks(); }
+      if (newMemo !== null) { links[index].memo = newMemo.trim(); saveToStorage(); updateAllViews(); }
     }
 
     function changeCategory(id, newCat) {
       const index = links.findIndex(l => l.id === id);
-      links[index].category = newCat; saveToStorage(); 
-      if(currentCategoryFilter !== 'all') renderLinks(); 
+      links[index].category = newCat; saveToStorage(); updateAllViews();
     }
 
-    function deleteLink(id) { if(confirm("삭제?")) { links = links.filter(l => l.id !== id); saveToStorage(); renderLinks(); } }
+    function deleteLink(id) { 
+      if(confirm("삭제?")) { links = links.filter(l => l.id !== id); saveToStorage(); updateAllViews(); } 
+    }
+    
     function saveToStorage() { localStorage.setItem('nitter_links', JSON.stringify(links)); }
-    function setSort(type) { currentSort = type; renderLinks(); }
-    function setCategoryFilter(category) { currentCategoryFilter = category; renderLinks(); }
+    function setSort(type) { currentSort = type; updateAllViews(); }
+    function setCategoryFilter(category) { currentCategoryFilter = category; updateAllViews(); }
   </script>
 </body>
 </html>
