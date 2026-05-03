@@ -97,7 +97,7 @@
   <div id="tab-archive" class="tab-content active">
     <div class="controls">
       <button id="btn-new" class="active" onclick="setSort('new')">최신</button>
-      <button id="btn-shuffle" onclick="setSort('shuffle')">🔀 랜덤</button>
+      <button id="btn-shuffle" onclick="setSort('shuffle')">랜</button>
       <button id="f-❤️" onclick="toggleReactionFilter('❤️')">❤️</button>
       <button id="f-👍" onclick="toggleReactionFilter('👍')">👍</button>
       <button id="f-🐐" onclick="toggleReactionFilter('🐐')">🐐</button>
@@ -123,7 +123,7 @@
   <div id="tab-diary" class="tab-content">
     <div class="controls" style="margin-bottom: 10px;">
       <select id="diary-filter" class="filter-select" onchange="setDiaryFilter(this.value)" style="border: 1px solid var(--primary-color); color: var(--primary-color); background: white;">
-        <option value="all">📁 모든 일기 보기</option>
+        <option value="all">All</option>
         <option value="일상">일상</option>
         <option value="타쿠">타쿠</option>
         <option value="벨">벨</option>
@@ -143,10 +143,10 @@
       <div class="diary-actions">
         <input type="file" id="diary-photo" accept="image/*" style="display:none" onchange="previewPhoto(this)">
         <div style="display:flex; gap:8px; align-items:center;">
-          <button onclick="document.getElementById('diary-photo').click()" style="background:#e1e8ed; padding:5px 10px; border-radius:10px;">🖼️ 이미지</button>
+          <button onclick="document.getElementById('diary-photo').click()" style="background:#e1e8ed; padding:5px 10px; border-radius:10px;"> image</button>
           <img id="p-preview" class="photo-preview">
         </div>
-        <button onclick="saveDiary()" style="background:var(--primary-color); color:white; border-radius:10px; padding:6px 14px; border:none; font-weight:bold;">저장✍️</button>
+        <button onclick="saveDiary()" style="background:var(--primary-color); color:white; border-radius:10px; padding:6px 14px; border:none; font-weight:bold;">저장</button>
       </div>
     </div>
     <div id="diary-list"></div>
@@ -333,7 +333,7 @@
     function renderGalleryFolders() {
       document.getElementById('gallery-folders').innerHTML = CATEGORIES.map(cat => {
         let icon = '📁';
-        if(cat === '미분류') icon = '📦'; else if(cat === '위시') icon = '🛒'; else if(cat === '웃김') icon = '🤣'; else if(cat === '정보') icon = '💡';
+        if(cat === '위시') icon = '😾'; else if(cat === '재희') icon = '🐶';else if(cat === '웃김') icon = '😸'; else if(cat === '정보') icon = '💡';
         return `
           <div class="folder-card" onclick="openFolder('${cat}')">
             <div class="folder-icon">${icon}</div>
