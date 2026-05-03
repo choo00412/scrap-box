@@ -6,7 +6,7 @@
   <title>choo 보관함</title>
   <link rel="manifest" href="manifest.json">
   <style>
-    /* ⭐️ 이게 들어가야 화면이 안 잘립니다! */
+    /* 화면 잘림 완벽 방지 */
     * { box-sizing: border-box; } 
 
     :root { --primary-color: #1da1f2; --bg-color: #f5f8fa; --card-bg: #ffffff; --text-main: #14171a; --text-sub: #657786; }
@@ -152,25 +152,17 @@
     let diaries = JSON.parse(localStorage.getItem('choo_diaries')) || [];
     let currentSort = 'new', currentReactionFilter = '', currentCategoryFilter = 'all';
     let tempPhoto = '';
-    let shuffledOrder = []; // 셔플 순서 기억용 배열
+    let shuffledOrder = []; 
     const CATEGORIES = ['미분류', '재희', '혜윤', '벨', '웃김', '정보', '위시', '연예계'];
 
-    // ⭐️ [초강력 세탁기] 어떤 형태의 nitter 주소든 무조건 x.com으로 쪼개서 붙여버림
+    // ⭐️ [초강력 세탁기] 어떤 형태의 nitter 주소든, twitter.com이든 모두 x.com으로 강제 통일
     function convertUrl(url) {
       if (!url) return '';
-      let cleanUrl = url.split('nitter.net').join('x.com')
-                        .split('nitter.cz').join('x.com')
-                        .split('nitter.it').join('x.com');
-      return cleanUrl;
-    }
-
-    // 누를 때는 x.com을 다시 nitter.net으로
-    function viewUrl(url) {
-      return url.split('x.com').join('nitter.net');
+      return url.replace(/nitter\.[a-z]+/gi, 'x.com').replace('twitter.com', 'x.com');
     }
 
     window.addEventListener('DOMContentLoaded', () => {
-      // 1. 기존 데이터 강제 세탁
+      // 1. 기존 데이터 강제 세탁 (이미 저장된 것도 싹 다 x.com으로 바꿈)
       let isUpdated = false;
       links = links.map(l => {
         const newUrl = convertUrl(l.url);
@@ -179,21 +171,26 @@
       });
       if(isUpdated) localStorage.setItem('nitter_links', JSON.stringify(links));
 
-      // 2. 외부에서 공유받아 들어온 데이터 세탁 후 저장
+      // 2. 외부에서 공유받아 들어온 데이터 철저하게 추적 후 세탁
       const urlParams = new URLSearchParams(window.location.search);
       let sharedUrl = urlParams.get('url') || '';
       let sharedText = urlParams.get('text') || '';
+      let sharedTitle = urlParams.get('title') || '';
       
-      if (!sharedUrl && sharedText) {
-        const match = sharedText.match(/https?:\/\/[^\s]+/);
-        if (match) sharedUrl = match[0];
+      // 안드로이드가 텍스트나 제목 칸에 링크를 몰래 숨겨놨을 경우를 대비한 추적 코드
+      let extractedUrl = sharedUrl;
+      if (!extractedUrl) {
+        const match = (sharedText + ' ' + sharedTitle).match(/https?:\/\/[^\s]+/);
+        if (match) extractedUrl = match[0];
       }
 
-      if (sharedUrl) {
-        sharedUrl = convertUrl(sharedUrl); // 무조건 x.com 변환
-        if (!links.some(l => l.url === sharedUrl)) {
+      if (extractedUrl) {
+        extractedUrl = convertUrl(extractedUrl); // 무조건 x.com 변환
+        
+        // 중복 체크 로직
+        if (!links.some(l => l.url === extractedUrl)) {
           let title = sharedText.replace(/https?:\/\/[^\s]+/g, '').trim() || '^3^ 기록중';
-          links.unshift({ id: Date.now(), title: title, url: sharedUrl, date: new Date().toLocaleDateString(), reaction: '', category: '미분류', memo: '' });
+          links.unshift({ id: Date.now(), title: title, url: extractedUrl, date: new Date().toLocaleDateString(), reaction: '', category: '미분류', memo: '' });
           localStorage.setItem('nitter_links', JSON.stringify(links));
         }
         window.history.replaceState({}, document.title, window.location.pathname);
@@ -212,11 +209,11 @@
     function generateCardHTML(l) {
       const u = l.url.toLowerCase();
       let pName = '링크', pColor = '#888';
-      if (u.includes('x.com') || u.includes('twitter')) { pName = 'X'; pColor = '#000'; }
+      if (u.includes('x.com')) { pName = 'X'; pColor = '#000'; }
       else if (u.includes('instagram')) { pName = '인스타'; pColor = '#E1306C'; }
       else if (u.includes('theqoo')) { pName = '더쿠'; pColor = '#333'; }
 
-      // 제목 누르면 바로 링크(viewUrl = nitter)로 새 탭에서 열림!
+      // ⭐️ 이제 viewUrl 꼼수 없이, 무조건 저장된 x.com 링크 원본 그대로 열립니다!
       return `
         <div class="link-card">
           <div>
@@ -226,7 +223,7 @@
                 ${CATEGORIES.map(c => `<option value="${c}" ${l.category === c ? 'selected' : ''}>${c}</option>`).join('')}
               </select>
             </div>
-            <h3 class="title"><a href="${viewUrl(l.url)}" target="_blank">${l.title}</a></h3>
+            <h3 class="title"><a href="${l.url}" target="_blank">${l.title}</a></h3>
             <div class="memo-box ${l.memo ? 'has-content' : ''}" onclick="editMemo(${l.id})">${l.memo || '캡션^3^'}</div>
           </div>
           <div class="card-footer">
@@ -299,7 +296,6 @@
       let filtered = currentReactionFilter ? links.filter(l => l.reaction === currentReactionFilter) : [...links];
       if (currentCategoryFilter !== 'all') filtered = filtered.filter(l => l.category === currentCategoryFilter);
       
-      // 정렬 및 셔플 로직 적용
       if (currentSort === 'new') {
         filtered.sort((a,b) => b.id - a.id);
       } else if (currentSort === 'shuffle') {
@@ -336,7 +332,6 @@
       document.getElementById('btn-new').classList.toggle('active', type === 'new');
       document.getElementById('btn-shuffle').classList.toggle('active', type === 'shuffle');
       
-      // 셔플 버튼을 누를 때마다 새로운 랜덤 순서를 만듦
       if (type === 'shuffle') {
         shuffledOrder = links.map(l => l.id).sort(() => Math.random() - 0.5);
       }
