@@ -94,7 +94,7 @@
   <div id="tab-archive" class="tab-content active">
     <div class="controls">
       <button id="btn-new" class="active" onclick="setSort('new')">최신</button>
-      <button id="btn-shuffle" onclick="setSort('shuffle')">🔀 셔플</button>
+      <button id="btn-shuffle" onclick="setSort('shuffle')"> 랜덤 </button>
       <button id="f-❤️" onclick="toggleReactionFilter('❤️')">❤️</button>
       <button id="f-👍" onclick="toggleReactionFilter('👍')">👍</button>
       <button id="f-🐐" onclick="toggleReactionFilter('🐐')">🐐</button>
@@ -121,11 +121,11 @@
   <!-- 탭 3: 일기장 -->
   <div id="tab-diary" class="tab-content">
     <div class="diary-input-area">
-      <textarea id="diary-input" class="diary-textarea" placeholder="오늘의 덕질 메모..."></textarea>
+      <textarea id="diary-input" class="diary-textarea" placeholder="다 적엉 ^_^"></textarea>
       <div class="diary-actions">
         <input type="file" id="diary-photo" accept="image/*" style="display:none" onchange="previewPhoto(this)">
         <div style="display:flex; gap:8px; align-items:center;">
-          <button onclick="document.getElementById('diary-photo').click()" style="background:#e1e8ed; padding:5px 10px; border-radius:10px;">🖼️ 사진</button>
+          <button onclick="document.getElementById('diary-photo').click()" style="background:#e1e8ed; padding:5px 10px; border-radius:10px;">이미지</button>
           <img id="p-preview" class="photo-preview">
         </div>
         <button onclick="saveDiary()" style="background:var(--primary-color); color:white; border-radius:10px; padding:6px 14px; border:none; font-weight:bold;">저장✍️</button>
