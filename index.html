@@ -333,7 +333,7 @@
     function renderGalleryFolders() {
       document.getElementById('gallery-folders').innerHTML = CATEGORIES.map(cat => {
         let icon = '📁';
-        if(cat === '위시') icon = '😾'; else if(cat === '재희') icon = '🐶';else if(cat === '웃김') icon = '😸'; else if(cat === '정보') icon = '💡';
+        if(cat === '위시') icon = '😾'; else if(cat === '재희') icon = '🐶';else if(cat === '웃김') icon = '😸'; else if(cat === '정보') icon = '😻'; else if(cat === '벨') icon = '🫃';
         return `
           <div class="folder-card" onclick="openFolder('${cat}')">
             <div class="folder-icon">${icon}</div>
