@@ -137,7 +137,7 @@
       <textarea id="memo-input-text" placeholder="여기에 내용을 적어주세요."></textarea>
       <div class="popup-btn-group">
         <button class="btn-cancel" onclick="closeMemoModal()">취소</button>
-        <button class="btn-confirm" onclick="saveMemoModal()">저장</button>
+        <button class="btn-confirm" onclick="saveMemoModal()">save</button>
       </div>
     </div>
   </div>
@@ -155,11 +155,11 @@
   <div id="tab-archive" class="tab-content active">
     <div class="controls">
       <button id="btn-new" class="active" onclick="setSort('new')">최신순</button>
-      <button id="btn-shuffle" onclick="setSort('shuffle')">랜덤</button>
-      <button id="f-하트" onclick="toggleReactionFilter('하트')">하트</button>
-      <button id="f-따봉" onclick="toggleReactionFilter('따봉')">따봉</button>
-      <button id="f-고트" onclick="toggleReactionFilter('고트')">고트</button>
-      <button id="f-와우" onclick="toggleReactionFilter('와우')">와우</button>
+      <button id="btn-shuffle" onclick="setSort('shuffle')">🎀</button>
+      <button id="f-하트" onclick="toggleReactionFilter('하트')">♥️</button>
+      <button id="f-따봉" onclick="toggleReactionFilter('따봉')">👍</button>
+      <button id="f-고트" onclick="toggleReactionFilter('고트')">🐐</button>
+      <button id="f-와우" onclick="toggleReactionFilter('와우')">🤩</button>
       <select id="category-filter" class="filter-select" onchange="setCategoryFilter(this.value)">
         <option value="all">전체 분류</option>
         <option value="재희">재희</option><option value="혜윤">혜윤</option><option value="벨">벨</option>
@@ -172,7 +172,7 @@
 
   <div id="tab-reading" class="tab-content">
     <div id="reading-main">
-      <button class="primary-btn" onclick="addBook()" style="margin-bottom: 12px; width:100%; padding:10px;">새로운 책 추가하기</button>
+      <button class="primary-btn" onclick="addBook()" style="margin-bottom: 12px; width:100%; padding:10px;">책 추가</button>
       <div id="book-list" class="book-grid"></div>
     </div>
     
@@ -183,20 +183,20 @@
       </div>
       
       <div class="input-area" id="book-log-input-area">
-        <textarea id="book-log-input" class="input-textarea" placeholder="이 책의 감상문을 남겨보세요. 여러 번 기록할 수 있습니다."></textarea>
+        <textarea id="book-log-input" class="input-textarea" placeholder="책의 기록을 남겨보세요."></textarea>
         <div class="input-actions">
           <input type="file" id="book-photo" accept="image/*" style="display:none" onchange="previewPhoto(this, 'b-preview')">
           <div style="display:flex; gap:8px; align-items:center;">
-            <button onclick="document.getElementById('book-photo').click()" style="background:#e1e8ed; padding:5px 10px; border-radius:10px; border:none; font-weight:bold; font-size:10px;">이미지 첨부</button>
+            <button onclick="document.getElementById('book-photo').click()" style="background:#e1e8ed; padding:5px 10px; border-radius:10px; border:none; font-weight:bold; font-size:10px;">image</button>
             <img id="b-preview" class="photo-preview">
           </div>
-          <button id="btn-book-log-save" onclick="saveBookLog()" class="primary-btn">기록 저장</button>
+          <button id="btn-book-log-save" onclick="saveBookLog()" class="primary-btn">save</button>
         </div>
       </div>
 
       <div class="controls" style="margin-bottom: 10px;">
-        <button id="btn-book-asc" class="active" onclick="setBookLogSort('asc')">과거순</button>
-        <button id="btn-book-desc" onclick="setBookLogSort('desc')">최신순</button>
+        <button id="btn-book-asc" class="active" onclick="setBookLogSort('asc')">Date ↑</button>
+        <button id="btn-book-desc" onclick="setBookLogSort('desc')">Date ↓</button>
       </div>
 
       <div id="book-log-list"></div>
@@ -230,10 +230,10 @@
       <div class="input-actions">
         <input type="file" id="diary-photo" accept="image/*" style="display:none" onchange="previewPhoto(this, 'p-preview')">
         <div style="display:flex; gap:8px; align-items:center;">
-          <button onclick="document.getElementById('diary-photo').click()" style="background:#e1e8ed; padding:5px 10px; border-radius:10px; border:none; font-weight:bold; font-size:10px;">이미지 첨부</button>
+          <button onclick="document.getElementById('diary-photo').click()" style="background:#e1e8ed; padding:5px 10px; border-radius:10px; border:none; font-weight:bold; font-size:10px;">image</button>
           <img id="p-preview" class="photo-preview">
         </div>
-        <button id="btn-diary-save" onclick="saveDiary()" class="primary-btn">일기 저장</button>
+        <button id="btn-diary-save" onclick="saveDiary()" class="primary-btn">save</button>
       </div>
     </div>
     <div id="diary-list"></div>
@@ -338,8 +338,8 @@
       currentBookId = null;
       editingDiaryId = null;
       editingBookLogId = null;
-      document.getElementById('btn-diary-save').innerText = '일기 저장';
-      document.getElementById('btn-book-log-save').innerText = '기록 저장';
+      document.getElementById('btn-diary-save').innerText = 'save';
+      document.getElementById('btn-book-log-save').innerText = 'save';
       
       renderBooks();
       renderTodos();
@@ -404,7 +404,7 @@
           </div>
           <div class="card-footer">
             <div class="reaction-group">
-              ${['하트','따봉','고트','와우'].map(e => `<button class="react-btn ${l.reaction===e?'active':''}" onclick="setReaction(${l.id},'${e}')">${e}</button>`).join('')}
+              ${['♥️','👍','🐐','🤩'].map(e => `<button class="react-btn ${l.reaction===e?'active':''}" onclick="setReaction(${l.id},'${e}')">${e}</button>`).join('')}
             </div>
             <div class="footer-btns" style="margin-top:5px;">
               <span class="date">${l.date}</span>
@@ -448,7 +448,7 @@
 
     /* --- [독서록 기능] --- */
     function addBook() {
-      const title = prompt("추가할 책 제목을 입력하세요:");
+      const title = prompt("책 제목 입력:");
       if (title && title.trim()) {
         const rColor = BOOK_COLORS[Math.floor(Math.random() * BOOK_COLORS.length)];
         books.unshift({ id: Date.now(), title: title.trim(), color: rColor, logs: [] });
@@ -480,7 +480,7 @@
       document.getElementById('reading-main').style.display = 'none';
       document.getElementById('reading-detail').style.display = 'block';
       editingBookLogId = null;
-      document.getElementById('btn-book-log-save').innerText = '기록 저장';
+      document.getElementById('btn-book-log-save').innerText = 'save';
       document.getElementById('book-log-input-area').style.borderColor = '#e1e8ed';
       resetPhoto('book-photo', 'b-preview');
       renderBookLogs();
@@ -515,7 +515,7 @@
         books[bIndex].logs[lIndex].content = content;
         if (tempPhoto) books[bIndex].logs[lIndex].photo = tempPhoto;
         editingBookLogId = null;
-        document.getElementById('btn-book-log-save').innerText = '기록 저장';
+        document.getElementById('btn-book-log-save').innerText = 'save';
         document.getElementById('book-log-input-area').style.borderColor = '#e1e8ed';
       } else {
         books[bIndex].logs.unshift({ id: Date.now(), date: getFormattedDate(), content: content, photo: tempPhoto });
@@ -595,7 +595,7 @@
         if (tempPhoto) diaries[index].photo = tempPhoto;
         
         editingDiaryId = null;
-        document.getElementById('btn-diary-save').innerText = '일기 저장';
+        document.getElementById('btn-diary-save').innerText = 'save';
         document.getElementById('diary-input-area').style.borderColor = '#e1e8ed';
       } else {
         diaries.unshift({ id: Date.now(), date: getFormattedDate(), content: content, photo: tempPhoto, category: category });
