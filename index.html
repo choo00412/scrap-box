@@ -8,7 +8,6 @@
   <style>
     * { box-sizing: border-box; } 
 
-    /* --sky-bg 변수를 추가해서 연한 하늘색을 전체적으로 관리합니다 */
     :root { --primary-color: #1da1f2; --sky-bg: #eaf4fc; --bg-color: #f5f8fa; --card-bg: #ffffff; --text-main: #14171a; --text-sub: #657786; }
     
     body { font-family: 'Segoe UI', sans-serif; padding: 10px; padding-bottom: 80px; max-width: 500px; margin: 0 auto; background-color: var(--bg-color); overflow-x: hidden; }
@@ -18,15 +17,12 @@
     .tab-content.active { display: block; }
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-    /* --- [상단 컨트롤러 & 선택창 하늘색 톤 맞춤] --- */
     .controls { display: flex; gap: 5px; margin-bottom: 12px; flex-wrap: wrap; }
     button { padding: 6px 10px; border: none; border-radius: 12px; background-color: #e1e8ed; cursor: pointer; font-size: 11px; font-weight: bold; color: var(--text-main); outline: none; -webkit-tap-highlight-color: transparent; }
     .controls button.active { background-color: var(--primary-color); color: white; }
     
-    /* 셀렉트 박스(분류창) 연한 하늘색으로 통일 */
     .filter-select { padding: 5px 8px; border-radius: 12px; font-size: 11px; font-weight: bold; outline: none; -webkit-tap-highlight-color: transparent; border: 1px solid var(--primary-color); color: var(--primary-color); background-color: var(--sky-bg); }
 
-    /* --- [보관함 그리드] --- */
     #link-list, #gallery-list { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
     
     .link-card { background: var(--card-bg); border: 1px solid #e1e8ed; padding: 10px; border-radius: 10px; display: flex; flex-direction: column; justify-content: space-between; min-height: 120px; min-width: 0; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
@@ -49,16 +45,13 @@
     .date { font-size: 8px; color: var(--text-sub); }
     .delete-btn { font-size: 9px; color: #aab8c2; background: none; border: none; cursor: pointer; padding: 0; }
 
-    /* --- [모달 공통 스타일 (전체화면 & 하늘색 커스텀 팝업)] --- */
     .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 2000; justify-content: center; align-items: center; padding: 20px; }
     
-    /* 일기장 상세 보기 모달 */
     .modal-content { background: white; width: 100%; max-width: 400px; padding: 20px; border-radius: 15px; position: relative; max-height: 90vh; overflow-y: auto; }
     .modal-close { position: absolute; top: 10px; right: 15px; font-size: 24px; cursor: pointer; color: #333; }
     .modal-img { width: 100%; border-radius: 10px; margin-bottom: 15px; display: none; }
     .modal-text { font-size: 14px; line-height: 1.6; color: #333; white-space: pre-wrap; }
 
-    /* ⭐️ 새로 만든 하늘색 커스텀 팝업창 (캡션 / 삭제 확인용) */
     .custom-popup { background: var(--sky-bg); width: 100%; max-width: 320px; padding: 20px; border-radius: 15px; border: 2px solid var(--primary-color); position: relative; }
     .custom-popup-title { margin: 0 0 15px 0; font-size: 15px; color: var(--primary-color); text-align: center; font-weight: bold; }
     .popup-btn-group { display: flex; justify-content: center; gap: 10px; margin-top: 15px; }
@@ -66,12 +59,10 @@
     .btn-confirm { background: var(--primary-color); border: none; color: white; padding: 8px 20px; border-radius: 10px; font-weight: bold; cursor: pointer; }
     #memo-input-text { width: 100%; height: 70px; border-radius: 8px; border: 1px solid var(--primary-color); padding: 10px; font-size: 12px; resize: none; outline: none; font-family: inherit; }
 
-    /* --- [갤러리 & 일기장] --- */
     .folder-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
     .folder-card { background: white; border: 1px solid #e1e8ed; border-radius: 10px; padding: 12px 5px; text-align: center; cursor: pointer; -webkit-tap-highlight-color: transparent; }
-    .folder-icon { font-size: 24px; margin-bottom: 5px; }
-    .folder-name { font-size: 11px; font-weight: bold; }
-    .folder-count { font-size: 9px; color: var(--text-sub); margin-top:3px; }
+    .folder-name { font-size: 12px; font-weight: bold; }
+    .folder-count { font-size: 10px; color: var(--text-sub); margin-top:5px; }
     .back-btn { background: #e1e8ed; border: none; padding: 6px 12px; border-radius: 12px; font-weight: bold; cursor: pointer; font-size: 11px; margin-bottom:12px; }
 
     .diary-input-area { background: white; padding: 12px; border-radius: 10px; border: 1px solid #e1e8ed; margin-bottom: 12px; }
@@ -81,21 +72,28 @@
     .diary-card { background: white; border: 1px solid #e1e8ed; padding: 12px; margin-bottom: 10px; border-radius: 10px; cursor: pointer; -webkit-tap-highlight-color: transparent; }
     .diary-img { width: 100%; border-radius: 8px; margin-bottom: 8px; max-height: 200px; object-fit: cover; }
 
+    /* --- [새로운 탭: 체크리스트 스타일] --- */
+    .todo-item { display: flex; align-items: center; justify-content: space-between; background: white; border: 1px solid #e1e8ed; padding: 12px; margin-bottom: 8px; border-radius: 10px; transition: 0.2s; }
+    .todo-item.completed { background: #f5f8fa; border-color: #cbd6e2; opacity: 0.6; }
+    .todo-item.completed .todo-text { text-decoration: line-through; color: var(--text-sub); }
+    .todo-content { display: flex; align-items: center; gap: 10px; flex: 1; cursor: pointer; }
+    .todo-checkbox { width: 18px; height: 18px; accent-color: var(--primary-color); cursor: pointer; margin: 0; }
+    .todo-text { font-size: 13px; color: var(--text-main); font-weight: bold; }
+    .todo-meta { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
+    .todo-date { font-size: 10px; color: var(--text-sub); }
+
     /* --- [하단 네비게이션] --- */
     .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: white; border-top: 1px solid #e1e8ed; display: flex; height: 55px; z-index: 1000; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); }
-    .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; background: transparent; border: none; cursor: pointer; color: var(--text-sub); font-size: 10px; font-weight: bold; gap: 3px; transition: 0.2s; -webkit-tap-highlight-color: transparent; }
-    .nav-icon { font-size: 16px; filter: grayscale(1); }
-    .nav-text { border-bottom: 2px solid transparent; padding-bottom: 2px; transition: 0.2s; }
+    .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; background: transparent; border: none; cursor: pointer; color: var(--text-sub); font-size: 11px; font-weight: bold; transition: 0.2s; -webkit-tap-highlight-color: transparent; }
+    .nav-text { border-bottom: 2px solid transparent; padding-bottom: 4px; transition: 0.2s; }
     .nav-item.active { background-color: transparent !important; color: var(--primary-color); }
-    .nav-item.active .nav-icon { filter: grayscale(0); }
     .nav-item.active .nav-text { border-bottom-color: var(--primary-color); }
   </style>
 </head>
 <body>
 
-  <h1>📥 choo 보관함</h1>
+  <h1>choo 보관함</h1>
 
-  <!-- 1. 일기장 모달 -->
   <div id="diary-modal" class="overlay" onclick="closeDiaryModal()">
     <div class="modal-content" onclick="event.stopPropagation()">
       <span class="modal-close" onclick="closeDiaryModal()">&times;</span>
@@ -105,10 +103,9 @@
     </div>
   </div>
 
-  <!-- 2. 하늘색 캡션 작성용 모달 -->
   <div id="memo-modal" class="overlay">
     <div class="custom-popup">
-      <h3 class="custom-popup-title">캡션 작성 ✍️</h3>
+      <h3 class="custom-popup-title">캡션 작성</h3>
       <textarea id="memo-input-text" placeholder="여기에 내용을 적어주세요."></textarea>
       <div class="popup-btn-group">
         <button class="btn-cancel" onclick="closeMemoModal()">취소</button>
@@ -117,10 +114,9 @@
     </div>
   </div>
 
-  <!-- 3. 하늘색 삭제 확인용 모달 -->
   <div id="confirm-modal" class="overlay">
     <div class="custom-popup">
-      <h3 class="custom-popup-title" id="confirm-msg">정말 삭제할까요? 🗑️</h3>
+      <h3 class="custom-popup-title" id="confirm-msg">정말 삭제할까요?</h3>
       <div class="popup-btn-group">
         <button class="btn-cancel" onclick="closeConfirmModal()">취소</button>
         <button class="btn-confirm" id="confirm-yes-btn">삭제</button>
@@ -149,7 +145,7 @@
   <div id="tab-gallery" class="tab-content">
     <div id="gallery-folders" class="folder-grid"></div>
     <div id="gallery-items" style="display: none;">
-      <button class="back-btn" onclick="closeFolder()">🔙 뒤로가기</button>
+      <button class="back-btn" onclick="closeFolder()">뒤로가기</button>
       <div id="gallery-list"></div>
     </div>
   </div>
@@ -157,7 +153,7 @@
   <div id="tab-diary" class="tab-content">
     <div class="controls" style="margin-bottom: 10px;">
       <select id="diary-filter" class="filter-select" onchange="setDiaryFilter(this.value)">
-        <option value="all">📁 모든 일기 보기</option>
+        <option value="all">모든 일기 보기</option>
         <option value="일상">일상</option>
         <option value="타쿠">타쿠</option>
         <option value="벨">벨</option>
@@ -172,7 +168,7 @@
         <option value="벨">벨</option>
         <option value="병">병</option>
       </select>
-      <textarea id="diary-input" class="diary-textarea" placeholder="다 적엉 ^_^"></textarea>
+      <textarea id="diary-input" class="diary-textarea" placeholder="내용을 적어주세요"></textarea>
       
       <div class="diary-actions">
         <input type="file" id="diary-photo" accept="image/*" style="display:none" onchange="previewPhoto(this)">
@@ -186,34 +182,59 @@
     <div id="diary-list"></div>
   </div>
 
+  <div id="tab-todo" class="tab-content">
+    <div class="diary-input-area">
+      <div style="display:flex; gap:5px; margin-bottom:8px;">
+        <select id="todo-category" class="filter-select" style="width: auto;">
+          <option value="할 일">할 일</option>
+          <option value="버킷리스트">버킷리스트</option>
+        </select>
+        <input type="text" id="todo-input" placeholder="새로운 목표를 적어보세요" style="flex:1; border:1px solid var(--primary-color); border-radius:8px; padding:8px; font-size:12px; outline:none;">
+        <button onclick="addTodo()" style="background:var(--primary-color); color:white; border-radius:8px; border:none; padding:0 15px; font-weight:bold;">추가</button>
+      </div>
+    </div>
+    <div id="todo-list"></div>
+  </div>
+
   <nav class="bottom-nav">
     <button id="nav-archive" class="nav-item active" onclick="switchTab('archive')">
-      <span class="nav-icon">😸</span><span class="nav-text">보관함</span>
+      <span class="nav-text">보관함</span>
     </button>
     <button id="nav-gallery" class="nav-item" onclick="switchTab('gallery')">
-      <span class="nav-icon">🐶</span><span class="nav-text">갤러리</span>
+      <span class="nav-text">갤러리</span>
     </button>
     <button id="nav-diary" class="nav-item" onclick="switchTab('diary')">
-      <span class="nav-icon">📝</span><span class="nav-text">일기장</span>
+      <span class="nav-text">일기장</span>
+    </button>
+    <button id="nav-todo" class="nav-item" onclick="switchTab('todo')">
+      <span class="nav-text">체크리스트</span>
     </button>
   </nav>
 
   <script>
     let links = JSON.parse(localStorage.getItem('nitter_links')) || [];
     let diaries = JSON.parse(localStorage.getItem('choo_diaries')) || [];
+    let todos = JSON.parse(localStorage.getItem('choo_todos')) || [];
     let currentSort = 'new', currentReactionFilter = '', currentCategoryFilter = 'all';
     let currentDiaryFilter = 'all'; 
     let tempPhoto = '';
     let shuffledOrder = []; 
     const CATEGORIES = ['미분류', '재희', '혜윤', '벨', '웃김', '정보', '위시', '연예계'];
 
-    // 커스텀 모달 전용 변수
     let currentEditingMemoId = null;
     let pendingConfirmAction = null;
 
     function convertUrl(url) {
       if (!url) return '';
       return url.replace(/nitter\.[a-z]+/gi, 'x.com').replace('twitter.com', 'x.com');
+    }
+
+    function getFormattedDate() {
+      const today = new Date();
+      const yyyy = today.getFullYear();
+      const mm = String(today.getMonth() + 1).padStart(2, '0');
+      const dd = String(today.getDate()).padStart(2, '0');
+      return `${yyyy}.${mm}.${dd}`;
     }
 
     window.addEventListener('DOMContentLoaded', () => {
@@ -240,8 +261,8 @@
         extractedUrl = convertUrl(extractedUrl); 
         
         if (!links.some(l => l.url === extractedUrl)) {
-          let title = sharedText.replace(/https?:\/\/[^\s]+/g, '').trim() || '^3^ 기록중';
-          links.unshift({ id: Date.now(), title: title, url: extractedUrl, date: new Date().toLocaleDateString(), reaction: '', category: '미분류', memo: '' });
+          let title = sharedText.replace(/https?:\/\/[^\s]+/g, '').trim() || '기록중';
+          links.unshift({ id: Date.now(), title: title, url: extractedUrl, date: getFormattedDate(), reaction: '', category: '미분류', memo: '' });
           localStorage.setItem('nitter_links', JSON.stringify(links));
         }
         window.history.replaceState({}, document.title, window.location.pathname);
@@ -255,14 +276,15 @@
       document.getElementById(`nav-${name}`).classList.add('active');
       if (name === 'gallery') renderGalleryFolders();
       if (name === 'diary') renderDiaries();
+      if (name === 'todo') renderTodos();
     }
 
+    /* --- [보관함 기능] --- */
     function generateCardHTML(l) {
       const u = l.url.toLowerCase();
       let pName = '링크', pColor = '#888';
       if (u.includes('x.com')) { pName = 'X'; pColor = '#000'; }
       else if (u.includes('instagram')) { pName = '인스타'; pColor = '#E1306C'; }
-      // ⭐️ 더쿠(티쿵) 뱃지 색상을 X(검은색)와 겹치지 않게 '남색(Navy)'으로 변경!
       else if (u.includes('theqoo')) { pName = '더쿠'; pColor = '#1A2A6C'; }
 
       return `
@@ -275,7 +297,7 @@
               </select>
             </div>
             <h3 class="title"><a href="${l.url}" target="_blank">${l.title}</a></h3>
-            <div class="memo-box ${l.memo ? 'has-content' : ''}" onclick="openMemoModal(${l.id})">${l.memo || '캡션^3^'}</div>
+            <div class="memo-box ${l.memo ? 'has-content' : ''}" onclick="openMemoModal(${l.id})">${l.memo || '캡션'}</div>
           </div>
           <div class="card-footer">
             <div class="reaction-group">
@@ -290,7 +312,6 @@
       `;
     }
 
-    /* --- [하늘색 커스텀 모달 기능들 (캡션 & 삭제)] --- */
     function openMemoModal(id) {
       currentEditingMemoId = id;
       const index = links.findIndex(l => l.id === id);
@@ -328,17 +349,25 @@
     });
 
     function confirmDeleteLink(id) {
-      showConfirmModal("정말 이 보관함을 삭제할까요? 🗑️", () => {
+      showConfirmModal("정말 이 보관함을 삭제할까요?", () => {
         links = links.filter(l => l.id !== id);
         save(); updateAllViews();
       });
     }
 
     function confirmDeleteDiary(id) {
-      showConfirmModal("정말 이 일기를 삭제할까요? 🗑️", () => {
+      showConfirmModal("정말 이 일기를 삭제할까요?", () => {
         diaries = diaries.filter(d => d.id !== id);
         localStorage.setItem('choo_diaries', JSON.stringify(diaries));
         renderDiaries();
+      });
+    }
+
+    function confirmDeleteTodo(id) {
+      showConfirmModal("정말 이 목표를 삭제할까요?", () => {
+        todos = todos.filter(t => t.id !== id);
+        localStorage.setItem('choo_todos', JSON.stringify(todos));
+        renderTodos();
       });
     }
 
@@ -360,7 +389,7 @@
       const category = document.getElementById('diary-category-input').value; 
       if (!content && !tempPhoto) return;
       
-      diaries.unshift({ id: Date.now(), date: new Date().toLocaleString(), content: content, photo: tempPhoto, category: category });
+      diaries.unshift({ id: Date.now(), date: getFormattedDate(), content: content, photo: tempPhoto, category: category });
       localStorage.setItem('choo_diaries', JSON.stringify(diaries));
       
       document.getElementById('diary-input').value = '';
@@ -407,6 +436,45 @@
 
     function closeDiaryModal() { document.getElementById('diary-modal').style.display = 'none'; }
 
+    /* --- [체크리스트 관련 기능] --- */
+    function addTodo() {
+      const text = document.getElementById('todo-input').value.trim();
+      const category = document.getElementById('todo-category').value;
+      if (!text) return;
+
+      todos.unshift({ id: Date.now(), text: text, category: category, date: getFormattedDate(), completed: false });
+      localStorage.setItem('choo_todos', JSON.stringify(todos));
+      document.getElementById('todo-input').value = '';
+      renderTodos();
+    }
+
+    function toggleTodo(id) {
+      const index = todos.findIndex(t => t.id === id);
+      if (index !== -1) {
+        todos[index].completed = !todos[index].completed;
+        localStorage.setItem('choo_todos', JSON.stringify(todos));
+        renderTodos();
+      }
+    }
+
+    function renderTodos() {
+      document.getElementById('todo-list').innerHTML = todos.map(t => `
+        <div class="todo-item ${t.completed ? 'completed' : ''}">
+          <div class="todo-content" onclick="toggleTodo(${t.id})">
+            <input type="checkbox" class="todo-checkbox" ${t.completed ? 'checked' : ''} onclick="event.stopPropagation(); toggleTodo(${t.id})">
+            <div>
+              <span class="platform-badge" style="background-color:var(--primary-color); font-size:8px; margin-right:4px;">${t.category}</span>
+              <span class="todo-text">${t.text}</span>
+            </div>
+          </div>
+          <div class="todo-meta">
+            <span class="todo-date">${t.date}</span>
+            <button class="delete-btn" onclick="confirmDeleteTodo(${t.id})">삭제</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
     /* --- [보관함 & 갤러리 렌더링] --- */
     function updateAllViews() {
       const list = document.getElementById('link-list');
@@ -424,12 +492,9 @@
 
     function renderGalleryFolders() {
       document.getElementById('gallery-folders').innerHTML = CATEGORIES.map(cat => {
-        let icon = '📁';
-        if(cat === '위시') icon = '😾'; else if(cat === '재희') icon = '🐶';else if(cat === '웃김') icon = '😸'; else if(cat === '정보') icon = '😻'; else if(cat === '벨') icon = '🥖';
         return `
           <div class="folder-card" onclick="openFolder('${cat}')">
-            <div class="folder-icon">${icon}</div>
-            <div class="folder-name">${cat}</div>
+            <div class="folder-name" style="margin-bottom: 5px;">${cat}</div>
             <div class="folder-count">${links.filter(l => l.category === cat).length}개</div>
           </div>
         `;
