@@ -20,70 +20,68 @@
     .controls { display: flex; gap: 5px; margin-bottom: 12px; flex-wrap: wrap; }
     button { padding: 6px 10px; border: none; border-radius: 12px; background-color: #e1e8ed; cursor: pointer; font-size: 11px; font-weight: bold; color: var(--text-main); outline: none; -webkit-tap-highlight-color: transparent; }
     .controls button.active { background-color: var(--primary-color); color: white; }
+    .primary-btn { background-color: var(--primary-color); color: white; border-radius: 10px; padding: 6px 14px; border: none; font-weight: bold; cursor: pointer; font-size: 11px; }
     
     .filter-select { padding: 5px 8px; border-radius: 12px; font-size: 11px; font-weight: bold; outline: none; -webkit-tap-highlight-color: transparent; border: 1px solid var(--primary-color); color: var(--primary-color); background-color: var(--sky-bg); }
 
-    #link-list, #gallery-list { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
-    
+    /* --- [보관함 그리드] --- */
+    #link-list { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
     .link-card { background: var(--card-bg); border: 1px solid #e1e8ed; padding: 10px; border-radius: 10px; display: flex; flex-direction: column; justify-content: space-between; min-height: 120px; min-width: 0; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
-    
     .card-top-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px; }
     .platform-badge { padding: 3px 5px; border-radius: 4px; font-size: 9px; font-weight: bold; color: white; }
     .category-select { border: 1px solid var(--primary-color); color: var(--primary-color); padding: 1px 2px; border-radius: 6px; font-size: 9px; background-color: var(--sky-bg); width: 50px; outline: none; }
-
     .title { font-size: 12px; font-weight: bold; margin: 0 0 6px 0; line-height: 1.3; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; word-break: break-all; }
     .title a { color: var(--text-main); text-decoration: none; display: block; }
-    
     .memo-box { background-color: #f8f9fa; border: 1px dashed #cbd6e2; padding: 6px; border-radius: 5px; font-size: 10px; color: #777; margin-bottom: 6px; flex-grow: 1; cursor: pointer; word-break: break-all; }
     .memo-box.has-content { border-style: solid; background-color: var(--sky-bg); color: var(--text-main); border-color: var(--primary-color); }
-    
     .card-footer { border-top: 1px solid #f0f2f5; padding-top: 6px; display: flex; flex-direction: column; gap: 4px; }
     .reaction-group { display: flex; gap: 4px; justify-content: space-around; }
-    .react-btn { background: none; border: none; font-size: 14px; cursor: pointer; opacity: 0.3; filter: grayscale(1); transition: 0.1s; padding: 0; }
-    .react-btn.active { opacity: 1; filter: grayscale(0); transform: scale(1.15); }
+    .react-btn { background: none; border: none; font-size: 11px; font-weight: bold; cursor: pointer; opacity: 0.4; filter: grayscale(1); transition: 0.1s; padding: 2px 4px; border-radius: 4px; }
+    .react-btn.active { opacity: 1; filter: grayscale(0); background-color: #e1e8ed; color: var(--primary-color); }
     .footer-btns { display: flex; justify-content: space-between; align-items: center; }
     .date { font-size: 8px; color: var(--text-sub); }
     .delete-btn { font-size: 9px; color: #aab8c2; background: none; border: none; cursor: pointer; padding: 0; }
 
+    /* --- [모달] --- */
     .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 2000; justify-content: center; align-items: center; padding: 20px; }
-    
     .modal-content { background: white; width: 100%; max-width: 400px; padding: 20px; border-radius: 15px; position: relative; max-height: 90vh; overflow-y: auto; }
-    .modal-close { position: absolute; top: 10px; right: 15px; font-size: 24px; cursor: pointer; color: #333; }
+    .modal-close { position: absolute; top: 10px; right: 15px; font-size: 20px; cursor: pointer; color: #333; font-weight: bold; }
     .modal-img { width: 100%; border-radius: 10px; margin-bottom: 15px; display: none; }
     .modal-text { font-size: 14px; line-height: 1.6; color: #333; white-space: pre-wrap; }
-
     .custom-popup { background: var(--sky-bg); width: 100%; max-width: 320px; padding: 20px; border-radius: 15px; border: 2px solid var(--primary-color); position: relative; }
-    .custom-popup-title { margin: 0 0 15px 0; font-size: 15px; color: var(--primary-color); text-align: center; font-weight: bold; }
+    .custom-popup-title { margin: 0 0 15px 0; font-size: 14px; color: var(--primary-color); text-align: center; font-weight: bold; }
     .popup-btn-group { display: flex; justify-content: center; gap: 10px; margin-top: 15px; }
-    .btn-cancel { background: white; border: 1px solid var(--primary-color); color: var(--primary-color); padding: 8px 20px; border-radius: 10px; font-weight: bold; cursor: pointer; }
-    .btn-confirm { background: var(--primary-color); border: none; color: white; padding: 8px 20px; border-radius: 10px; font-weight: bold; cursor: pointer; }
+    .btn-cancel { background: white; border: 1px solid var(--primary-color); color: var(--primary-color); padding: 8px 20px; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 11px;}
+    .btn-confirm { background: var(--primary-color); border: none; color: white; padding: 8px 20px; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 11px;}
     #memo-input-text { width: 100%; height: 70px; border-radius: 8px; border: 1px solid var(--primary-color); padding: 10px; font-size: 12px; resize: none; outline: none; font-family: inherit; }
 
-    .folder-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-    .folder-card { background: white; border: 1px solid #e1e8ed; border-radius: 10px; padding: 12px 5px; text-align: center; cursor: pointer; -webkit-tap-highlight-color: transparent; }
-    .folder-name { font-size: 12px; font-weight: bold; }
-    .folder-count { font-size: 10px; color: var(--text-sub); margin-top:5px; }
+    /* --- [독서록 & 체크리스트 메뉴] --- */
+    .menu-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    .menu-card { background: white; border: 1px solid #e1e8ed; border-radius: 10px; padding: 20px 10px; text-align: center; cursor: pointer; -webkit-tap-highlight-color: transparent; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
+    .menu-card.highlight { background: var(--sky-bg); border-color: var(--primary-color); }
+    .menu-title { font-size: 13px; font-weight: bold; color: var(--primary-color); margin-bottom: 5px; }
+    .menu-desc { font-size: 10px; color: var(--text-sub); }
     .back-btn { background: #e1e8ed; border: none; padding: 6px 12px; border-radius: 12px; font-weight: bold; cursor: pointer; font-size: 11px; margin-bottom:12px; }
 
-    .diary-input-area { background: white; padding: 12px; border-radius: 10px; border: 1px solid #e1e8ed; margin-bottom: 12px; }
-    .diary-textarea { width: 100%; height: 60px; border: none; outline: none; font-size: 12px; resize: none; font-family: inherit; }
-    .diary-actions { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; border-top: 1px dashed #e1e8ed; padding-top: 8px; }
-    .photo-preview { width: 50px; height: 50px; border-radius: 8px; object-fit: cover; display: none; border: 1px solid #e1e8ed; }
-    .diary-card { background: white; border: 1px solid #e1e8ed; padding: 12px; margin-bottom: 10px; border-radius: 10px; cursor: pointer; -webkit-tap-highlight-color: transparent; }
-    .diary-img { width: 100%; border-radius: 8px; margin-bottom: 8px; max-height: 200px; object-fit: cover; }
+    /* --- [입력 영역 공통] --- */
+    .input-area { background: white; padding: 12px; border-radius: 10px; border: 1px solid #e1e8ed; margin-bottom: 12px; }
+    .input-textarea { width: 100%; height: 60px; border: none; outline: none; font-size: 12px; resize: none; font-family: inherit; }
+    .input-actions { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; border-top: 1px dashed #e1e8ed; padding-top: 8px; }
+    .photo-preview { width: 40px; height: 40px; border-radius: 8px; object-fit: cover; display: none; border: 1px solid #e1e8ed; }
+    .list-card { background: white; border: 1px solid #e1e8ed; padding: 12px; margin-bottom: 10px; border-radius: 10px; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+    .list-img { width: 100%; border-radius: 8px; margin-bottom: 8px; max-height: 200px; object-fit: cover; }
 
-    /* --- [새로운 탭: 체크리스트 스타일] --- */
+    /* --- [체크리스트 전용] --- */
     .todo-item { display: flex; align-items: center; justify-content: space-between; background: white; border: 1px solid #e1e8ed; padding: 12px; margin-bottom: 8px; border-radius: 10px; transition: 0.2s; }
     .todo-item.completed { background: #f5f8fa; border-color: #cbd6e2; opacity: 0.6; }
     .todo-item.completed .todo-text { text-decoration: line-through; color: var(--text-sub); }
     .todo-content { display: flex; align-items: center; gap: 10px; flex: 1; cursor: pointer; }
-    .todo-checkbox { width: 18px; height: 18px; accent-color: var(--primary-color); cursor: pointer; margin: 0; }
-    .todo-text { font-size: 13px; color: var(--text-main); font-weight: bold; }
+    .todo-checkbox { width: 16px; height: 16px; accent-color: var(--primary-color); cursor: pointer; margin: 0; }
+    .todo-text { font-size: 12px; color: var(--text-main); font-weight: bold; }
     .todo-meta { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
-    .todo-date { font-size: 10px; color: var(--text-sub); }
 
     /* --- [하단 네비게이션] --- */
-    .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: white; border-top: 1px solid #e1e8ed; display: flex; height: 55px; z-index: 1000; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); }
+    .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: white; border-top: 1px solid #e1e8ed; display: flex; height: 50px; z-index: 1000; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); }
     .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; background: transparent; border: none; cursor: pointer; color: var(--text-sub); font-size: 11px; font-weight: bold; transition: 0.2s; -webkit-tap-highlight-color: transparent; }
     .nav-text { border-bottom: 2px solid transparent; padding-bottom: 4px; transition: 0.2s; }
     .nav-item.active { background-color: transparent !important; color: var(--primary-color); }
@@ -96,7 +94,7 @@
 
   <div id="diary-modal" class="overlay" onclick="closeDiaryModal()">
     <div class="modal-content" onclick="event.stopPropagation()">
-      <span class="modal-close" onclick="closeDiaryModal()">&times;</span>
+      <span class="modal-close" onclick="closeDiaryModal()">X</span>
       <div id="dm-date" style="font-size:10px; color:#888; margin-bottom:10px;"></div>
       <img id="dm-photo" class="modal-img">
       <div id="dm-content" class="modal-text"></div>
@@ -127,13 +125,13 @@
   <div id="tab-archive" class="tab-content active">
     <div class="controls">
       <button id="btn-new" class="active" onclick="setSort('new')">최신</button>
-      <button id="btn-shuffle" onclick="setSort('shuffle')">r</button>
-      <button id="f-❤️" onclick="toggleReactionFilter('❤️')">❤️</button>
-      <button id="f-👍" onclick="toggleReactionFilter('👍')">👍</button>
-      <button id="f-🐐" onclick="toggleReactionFilter('🐐')">🐐</button>
-      <button id="f-🤩" onclick="toggleReactionFilter('🤩')">🤩</button>
+      <button id="btn-shuffle" onclick="setSort('shuffle')">랜덤</button>
+      <button id="f-하트" onclick="toggleReactionFilter('하트')">하트</button>
+      <button id="f-따봉" onclick="toggleReactionFilter('따봉')">따봉</button>
+      <button id="f-고트" onclick="toggleReactionFilter('고트')">고트</button>
+      <button id="f-와우" onclick="toggleReactionFilter('와우')">와우</button>
       <select id="category-filter" class="filter-select" onchange="setCategoryFilter(this.value)">
-        <option value="all">전체</option>
+        <option value="all">전체 분류</option>
         <option value="재희">재희</option><option value="혜윤">혜윤</option><option value="벨">벨</option>
         <option value="웃김">웃김</option><option value="정보">정보</option><option value="위시">위시</option>
         <option value="연예계">연예계</option><option value="미분류">미분류</option>
@@ -142,11 +140,25 @@
     <div id="link-list"></div>
   </div>
 
-  <div id="tab-gallery" class="tab-content">
-    <div id="gallery-folders" class="folder-grid"></div>
-    <div id="gallery-items" style="display: none;">
-      <button class="back-btn" onclick="closeFolder()">뒤로가기</button>
-      <div id="gallery-list"></div>
+  <div id="tab-reading" class="tab-content">
+    <div id="reading-main">
+      <button class="primary-btn" onclick="addBook()" style="margin-bottom: 12px; width:100%; padding:10px;">새로운 책 추가하기</button>
+      <div id="book-list" class="menu-grid"></div>
+    </div>
+    
+    <div id="reading-detail" style="display: none;">
+      <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
+        <button class="back-btn" onclick="closeBook()" style="margin:0;">이전</button>
+        <h3 id="current-book-title" style="margin:0; font-size:14px; color:var(--text-main);"></h3>
+      </div>
+      
+      <div class="input-area">
+        <textarea id="book-log-input" class="input-textarea" placeholder="이 책의 감상문을 남겨보세요. 여러 번 남길 수 있습니다."></textarea>
+        <div class="input-actions" style="justify-content: flex-end;">
+          <button onclick="saveBookLog()" class="primary-btn">기록하기</button>
+        </div>
+      </div>
+      <div id="book-log-list"></div>
     </div>
   </div>
 
@@ -161,47 +173,71 @@
       </select>
     </div>
 
-    <div class="diary-input-area">
+    <div class="input-area">
       <select id="diary-category-input" class="filter-select" style="padding: 4px 8px; font-size: 10px; margin-bottom: 8px;">
         <option value="일상">일상</option>
         <option value="타쿠">타쿠</option>
         <option value="벨">벨</option>
         <option value="병">병</option>
       </select>
-      <textarea id="diary-input" class="diary-textarea" placeholder="내용을 적어주세요"></textarea>
+      <textarea id="diary-input" class="input-textarea" placeholder="내용을 적어주세요"></textarea>
       
-      <div class="diary-actions">
+      <div class="input-actions">
         <input type="file" id="diary-photo" accept="image/*" style="display:none" onchange="previewPhoto(this)">
         <div style="display:flex; gap:8px; align-items:center;">
-          <button onclick="document.getElementById('diary-photo').click()" style="background:#e1e8ed; padding:5px 10px; border-radius:10px;">image</button>
+          <button onclick="document.getElementById('diary-photo').click()" style="background:#e1e8ed; padding:5px 10px; border-radius:10px; border:none; font-weight:bold; font-size:10px;">이미지 첨부</button>
           <img id="p-preview" class="photo-preview">
         </div>
-        <button onclick="saveDiary()" style="background:var(--primary-color); color:white; border-radius:10px; padding:6px 14px; border:none; font-weight:bold;">save</button>
+        <button onclick="saveDiary()" class="primary-btn">저장</button>
       </div>
     </div>
     <div id="diary-list"></div>
   </div>
 
   <div id="tab-todo" class="tab-content">
-    <div class="diary-input-area">
-      <div style="display:flex; gap:5px; margin-bottom:8px;">
-        <select id="todo-category" class="filter-select" style="width: auto;">
-          <option value="할 일">할 일</option>
-          <option value="버킷리스트">버킷리스트</option>
-        </select>
-        <input type="text" id="todo-input" placeholder="새로운 목표를 적어보세요" style="flex:1; border:1px solid var(--primary-color); border-radius:8px; padding:8px; font-size:12px; outline:none;">
-        <button onclick="addTodo()" style="background:var(--primary-color); color:white; border-radius:8px; border:none; padding:0 15px; font-weight:bold;">추가</button>
+    <div id="todo-menu" class="menu-grid">
+      <div class="menu-card" onclick="openTodoView('할 일')">
+        <div class="menu-title">할 일</div>
+        <div class="menu-desc" id="count-todo">0개 남음</div>
+      </div>
+      <div class="menu-card" onclick="openTodoView('버킷리스트')">
+        <div class="menu-title">버킷리스트</div>
+        <div class="menu-desc" id="count-bucket">0개 남음</div>
+      </div>
+      <div class="menu-card highlight" style="grid-column: span 2;" onclick="openPastTodos()">
+        <div class="menu-title">이전 기록</div>
+        <div class="menu-desc">완료된 항목 모아보기</div>
       </div>
     </div>
-    <div id="todo-list"></div>
+
+    <div id="todo-active-view" style="display: none;">
+      <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
+        <button class="back-btn" onclick="closeTodoView()" style="margin:0;">이전</button>
+        <h3 id="todo-view-title" style="margin:0; font-size:14px; color:var(--text-main);"></h3>
+      </div>
+      
+      <div class="input-area" style="display:flex; gap:5px; padding:10px;">
+        <input type="text" id="todo-input" placeholder="새로운 목표를 적어주세요" style="flex:1; border:1px solid var(--primary-color); border-radius:8px; padding:8px; font-size:12px; outline:none;">
+        <button onclick="addTodoItem()" class="primary-btn">추가</button>
+      </div>
+      <div id="todo-list"></div>
+    </div>
+
+    <div id="todo-past-view" style="display: none;">
+      <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
+        <button class="back-btn" onclick="closeTodoView()" style="margin:0;">이전</button>
+        <h3 style="margin:0; font-size:14px; color:var(--text-main);">완료된 이전 기록</h3>
+      </div>
+      <div id="todo-past-list"></div>
+    </div>
   </div>
 
   <nav class="bottom-nav">
     <button id="nav-archive" class="nav-item active" onclick="switchTab('archive')">
       <span class="nav-text">보관함</span>
     </button>
-    <button id="nav-gallery" class="nav-item" onclick="switchTab('gallery')">
-      <span class="nav-text">갤러리</span>
+    <button id="nav-reading" class="nav-item" onclick="switchTab('reading')">
+      <span class="nav-text">독서록</span>
     </button>
     <button id="nav-diary" class="nav-item" onclick="switchTab('diary')">
       <span class="nav-text">일기장</span>
@@ -212,11 +248,17 @@
   </nav>
 
   <script>
+    /* --- 데이터 초기화 --- */
     let links = JSON.parse(localStorage.getItem('nitter_links')) || [];
     let diaries = JSON.parse(localStorage.getItem('choo_diaries')) || [];
     let todos = JSON.parse(localStorage.getItem('choo_todos')) || [];
+    let books = JSON.parse(localStorage.getItem('choo_books')) || [];
+
     let currentSort = 'new', currentReactionFilter = '', currentCategoryFilter = 'all';
     let currentDiaryFilter = 'all'; 
+    let currentTodoType = ''; // '할 일' or '버킷리스트'
+    let currentBookId = null;
+
     let tempPhoto = '';
     let shuffledOrder = []; 
     const CATEGORIES = ['미분류', '재희', '혜윤', '벨', '웃김', '정보', '위시', '연예계'];
@@ -224,11 +266,7 @@
     let currentEditingMemoId = null;
     let pendingConfirmAction = null;
 
-    function convertUrl(url) {
-      if (!url) return '';
-      return url.replace(/nitter\.[a-z]+/gi, 'x.com').replace('twitter.com', 'x.com');
-    }
-
+    // 날짜 포맷 (YYYY.MM.DD)
     function getFormattedDate() {
       const today = new Date();
       const yyyy = today.getFullYear();
@@ -237,11 +275,22 @@
       return `${yyyy}.${mm}.${dd}`;
     }
 
+    function convertUrl(url) {
+      if (!url) return '';
+      return url.replace(/nitter\.[a-z]+/gi, 'x.com').replace('twitter.com', 'x.com');
+    }
+
     window.addEventListener('DOMContentLoaded', () => {
+      // 리액션 텍스트로 변환 (이모지 제거 소급 적용)
       let isUpdated = false;
       links = links.map(l => {
         const newUrl = convertUrl(l.url);
         if(l.url !== newUrl) { l.url = newUrl; isUpdated = true; }
+        
+        if(l.reaction === '❤️') { l.reaction = '하트'; isUpdated = true; }
+        else if(l.reaction === '👍') { l.reaction = '따봉'; isUpdated = true; }
+        else if(l.reaction === '🐐') { l.reaction = '고트'; isUpdated = true; }
+        else if(l.reaction === '🤩') { l.reaction = '와우'; isUpdated = true; }
         return l;
       });
       if(isUpdated) localStorage.setItem('nitter_links', JSON.stringify(links));
@@ -259,9 +308,8 @@
 
       if (extractedUrl) {
         extractedUrl = convertUrl(extractedUrl); 
-        
         if (!links.some(l => l.url === extractedUrl)) {
-          let title = sharedText.replace(/https?:\/\/[^\s]+/g, '').trim() || '기록중';
+          let title = sharedText.replace(/https?:\/\/[^\s]+/g, '').trim() || '새로운 스크랩';
           links.unshift({ id: Date.now(), title: title, url: extractedUrl, date: getFormattedDate(), reaction: '', category: '미분류', memo: '' });
           localStorage.setItem('nitter_links', JSON.stringify(links));
         }
@@ -274,9 +322,10 @@
       document.querySelectorAll('.tab-content, .nav-item').forEach(el => el.classList.remove('active'));
       document.getElementById(`tab-${name}`).classList.add('active');
       document.getElementById(`nav-${name}`).classList.add('active');
-      if (name === 'gallery') renderGalleryFolders();
+      
+      if (name === 'reading') renderBooks();
       if (name === 'diary') renderDiaries();
-      if (name === 'todo') renderTodos();
+      if (name === 'todo') renderTodoMenu();
     }
 
     /* --- [보관함 기능] --- */
@@ -297,13 +346,13 @@
               </select>
             </div>
             <h3 class="title"><a href="${l.url}" target="_blank">${l.title}</a></h3>
-            <div class="memo-box ${l.memo ? 'has-content' : ''}" onclick="openMemoModal(${l.id})">${l.memo || '캡션'}</div>
+            <div class="memo-box ${l.memo ? 'has-content' : ''}" onclick="openMemoModal(${l.id})">${l.memo || '캡션 작성'}</div>
           </div>
           <div class="card-footer">
             <div class="reaction-group">
-              ${['❤️','👍','🐐','🤩'].map(e => `<button class="react-btn ${l.reaction===e?'active':''}" onclick="setReaction(${l.id},'${e}')">${e}</button>`).join('')}
+              ${['하트','따봉','고트','와우'].map(e => `<button class="react-btn ${l.reaction===e?'active':''}" onclick="setReaction(${l.id},'${e}')">${e}</button>`).join('')}
             </div>
-            <div class="footer-btns">
+            <div class="footer-btns" style="margin-top:5px;">
               <span class="date">${l.date}</span>
               <button class="delete-btn" onclick="confirmDeleteLink(${l.id})">삭제</button>
             </div>
@@ -318,12 +367,7 @@
       document.getElementById('memo-input-text').value = links[index].memo || '';
       document.getElementById('memo-modal').style.display = 'flex';
     }
-
-    function closeMemoModal() {
-      document.getElementById('memo-modal').style.display = 'none';
-      currentEditingMemoId = null;
-    }
-
+    function closeMemoModal() { document.getElementById('memo-modal').style.display = 'none'; currentEditingMemoId = null; }
     function saveMemoModal() {
       if(currentEditingMemoId !== null) {
         const index = links.findIndex(l => l.id === currentEditingMemoId);
@@ -337,38 +381,77 @@
       pendingConfirmAction = action;
       document.getElementById('confirm-modal').style.display = 'flex';
     }
+    function closeConfirmModal() { document.getElementById('confirm-modal').style.display = 'none'; pendingConfirmAction = null; }
+    document.getElementById('confirm-yes-btn').addEventListener('click', () => { if (pendingConfirmAction) pendingConfirmAction(); closeConfirmModal(); });
 
-    function closeConfirmModal() {
-      document.getElementById('confirm-modal').style.display = 'none';
-      pendingConfirmAction = null;
+    function confirmDeleteLink(id) { showConfirmModal("정말 이 보관함을 삭제할까요?", () => { links = links.filter(l => l.id !== id); save(); updateAllViews(); }); }
+    function confirmDeleteDiary(id) { showConfirmModal("정말 이 일기를 삭제할까요?", () => { diaries = diaries.filter(d => d.id !== id); localStorage.setItem('choo_diaries', JSON.stringify(diaries)); renderDiaries(); }); }
+    function confirmDeleteTodo(id) { showConfirmModal("정말 이 기록을 삭제할까요?", () => { todos = todos.filter(t => t.id !== id); localStorage.setItem('choo_todos', JSON.stringify(todos)); if(document.getElementById('todo-active-view').style.display === 'block') renderTodos(); else renderPastTodos(); }); }
+    function confirmDeleteBookLog(logId) { showConfirmModal("이 감상문을 삭제할까요?", () => { const bIndex = books.findIndex(b => b.id === currentBookId); books[bIndex].logs = books[bIndex].logs.filter(x => x.id !== logId); localStorage.setItem('choo_books', JSON.stringify(books)); renderBookLogs(); }); }
+    function confirmDeleteBook(id) { showConfirmModal("이 책과 모든 감상문을 삭제할까요?", () => { books = books.filter(b => b.id !== id); localStorage.setItem('choo_books', JSON.stringify(books)); renderBooks(); }); }
+
+    /* --- [독서록 기능] --- */
+    function addBook() {
+      const title = prompt("추가할 책 제목을 입력하세요:");
+      if (title && title.trim()) {
+        books.unshift({ id: Date.now(), title: title.trim(), logs: [] });
+        localStorage.setItem('choo_books', JSON.stringify(books));
+        renderBooks();
+      }
+    }
+    
+    function renderBooks() {
+      const list = document.getElementById('book-list');
+      if (books.length === 0) {
+        list.innerHTML = '<div style="grid-column: span 2; text-align:center; color:var(--text-sub); padding:30px;">저장된 책이 없습니다.</div>';
+        return;
+      }
+      list.innerHTML = books.map(b => `
+        <div class="menu-card" onclick="openBook(${b.id})">
+          <div class="menu-title">${b.title}</div>
+          <div class="menu-desc">감상문 ${b.logs.length}개</div>
+          <button onclick="event.stopPropagation(); confirmDeleteBook(${b.id})" style="background:none; border:none; color:#aab8c2; font-size:10px; margin-top:8px; cursor:pointer;">책 삭제</button>
+        </div>
+      `).join('');
     }
 
-    document.getElementById('confirm-yes-btn').addEventListener('click', () => {
-      if (pendingConfirmAction) pendingConfirmAction();
-      closeConfirmModal();
-    });
-
-    function confirmDeleteLink(id) {
-      showConfirmModal("정말 이 보관함을 삭제할까요?", () => {
-        links = links.filter(l => l.id !== id);
-        save(); updateAllViews();
-      });
+    function openBook(id) {
+      currentBookId = id;
+      const b = books.find(x => x.id === id);
+      document.getElementById('current-book-title').innerText = b.title;
+      document.getElementById('reading-main').style.display = 'none';
+      document.getElementById('reading-detail').style.display = 'block';
+      renderBookLogs();
     }
 
-    function confirmDeleteDiary(id) {
-      showConfirmModal("정말 이 일기를 삭제할까요?", () => {
-        diaries = diaries.filter(d => d.id !== id);
-        localStorage.setItem('choo_diaries', JSON.stringify(diaries));
-        renderDiaries();
-      });
+    function closeBook() {
+      currentBookId = null;
+      document.getElementById('reading-detail').style.display = 'none';
+      document.getElementById('reading-main').style.display = 'block';
+      renderBooks();
     }
 
-    function confirmDeleteTodo(id) {
-      showConfirmModal("정말 이 목표를 삭제할까요?", () => {
-        todos = todos.filter(t => t.id !== id);
-        localStorage.setItem('choo_todos', JSON.stringify(todos));
-        renderTodos();
-      });
+    function saveBookLog() {
+      const content = document.getElementById('book-log-input').value.trim();
+      if (!content) return;
+      const bIndex = books.findIndex(x => x.id === currentBookId);
+      books[bIndex].logs.unshift({ id: Date.now(), date: getFormattedDate(), content: content });
+      localStorage.setItem('choo_books', JSON.stringify(books));
+      document.getElementById('book-log-input').value = '';
+      renderBookLogs();
+    }
+
+    function renderBookLogs() {
+      const b = books.find(x => x.id === currentBookId);
+      document.getElementById('book-log-list').innerHTML = b.logs.map(log => `
+        <div class="list-card">
+          <div style="font-size:10px; color:#aaa; margin-bottom:6px; display:flex; justify-content:space-between;">
+            <span>${log.date}</span>
+            <button class="delete-btn" onclick="confirmDeleteBookLog(${log.id})">삭제</button>
+          </div>
+          <div style="font-size:12px; line-height:1.4; white-space:pre-wrap;">${log.content}</div>
+        </div>
+      `).join('');
     }
 
     /* --- [일기장 관련 기능] --- */
@@ -398,10 +481,7 @@
       tempPhoto = ''; renderDiaries();
     }
 
-    function setDiaryFilter(cat) {
-      currentDiaryFilter = cat;
-      renderDiaries();
-    }
+    function setDiaryFilter(cat) { currentDiaryFilter = cat; renderDiaries(); }
 
     function renderDiaries() {
       let filteredDiaries = diaries;
@@ -410,7 +490,7 @@
       }
 
       document.getElementById('diary-list').innerHTML = filteredDiaries.map(d => `
-        <div class="diary-card" onclick="openDiaryModal(${d.id})">
+        <div class="list-card" onclick="openDiaryModal(${d.id})">
           <div style="font-size:10px; color:#aaa; margin-bottom:6px; display:flex; justify-content:space-between; align-items:center;">
             <div>
               <span class="platform-badge" style="background-color:var(--primary-color); font-size:8px; margin-right:4px; border-radius:4px;">${d.category || '일상'}</span>
@@ -418,7 +498,7 @@
             </div>
             <button class="delete-btn" onclick="event.stopPropagation(); confirmDeleteDiary(${d.id})">삭제</button>
           </div>
-          ${d.photo ? `<img src="${d.photo}" class="diary-img">` : ''}
+          ${d.photo ? `<img src="${d.photo}" class="list-img">` : ''}
           <div style="font-size:12px; line-height:1.4; white-space:pre-wrap; overflow:hidden; text-overflow:ellipsis; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical;">${d.content}</div>
         </div>
       `).join('');
@@ -433,49 +513,95 @@
       else { photoEl.style.display = 'none'; }
       document.getElementById('diary-modal').style.display = 'flex';
     }
-
     function closeDiaryModal() { document.getElementById('diary-modal').style.display = 'none'; }
 
-    /* --- [체크리스트 관련 기능] --- */
-    function addTodo() {
-      const text = document.getElementById('todo-input').value.trim();
-      const category = document.getElementById('todo-category').value;
-      if (!text) return;
+    /* --- [체크리스트 기능] --- */
+    function renderTodoMenu() {
+      const todoCount = todos.filter(t => t.type === '할 일' && !t.completed).length;
+      const bucketCount = todos.filter(t => t.type === '버킷리스트' && !t.completed).length;
+      document.getElementById('count-todo').innerText = `${todoCount}개 남음`;
+      document.getElementById('count-bucket').innerText = `${bucketCount}개 남음`;
+    }
 
-      todos.unshift({ id: Date.now(), text: text, category: category, date: getFormattedDate(), completed: false });
+    function openTodoView(type) {
+      currentTodoType = type;
+      document.getElementById('todo-menu').style.display = 'none';
+      document.getElementById('todo-active-view').style.display = 'block';
+      document.getElementById('todo-view-title').innerText = type;
+      renderTodos();
+    }
+
+    function openPastTodos() {
+      document.getElementById('todo-menu').style.display = 'none';
+      document.getElementById('todo-past-view').style.display = 'block';
+      renderPastTodos();
+    }
+
+    function closeTodoView() {
+      document.getElementById('todo-active-view').style.display = 'none';
+      document.getElementById('todo-past-view').style.display = 'none';
+      document.getElementById('todo-menu').style.display = 'grid';
+      renderTodoMenu();
+    }
+
+    function addTodoItem() {
+      const text = document.getElementById('todo-input').value.trim();
+      if (!text) return;
+      todos.unshift({ id: Date.now(), text: text, type: currentTodoType, date: getFormattedDate(), completed: false });
       localStorage.setItem('choo_todos', JSON.stringify(todos));
       document.getElementById('todo-input').value = '';
       renderTodos();
     }
 
-    function toggleTodo(id) {
+    function toggleTodoItem(id) {
       const index = todos.findIndex(t => t.id === id);
-      if (index !== -1) {
-        todos[index].completed = !todos[index].completed;
-        localStorage.setItem('choo_todos', JSON.stringify(todos));
+      todos[index].completed = !todos[index].completed;
+      localStorage.setItem('choo_todos', JSON.stringify(todos));
+      
+      // 체크하면 리스트에서 사라지고 이전기록으로 넘어가게 바로 렌더링
+      if(document.getElementById('todo-active-view').style.display === 'block') {
         renderTodos();
+      } else {
+        renderPastTodos();
       }
     }
 
     function renderTodos() {
-      document.getElementById('todo-list').innerHTML = todos.map(t => `
-        <div class="todo-item ${t.completed ? 'completed' : ''}">
-          <div class="todo-content" onclick="toggleTodo(${t.id})">
-            <input type="checkbox" class="todo-checkbox" ${t.completed ? 'checked' : ''} onclick="event.stopPropagation(); toggleTodo(${t.id})">
-            <div>
-              <span class="platform-badge" style="background-color:var(--primary-color); font-size:8px; margin-right:4px;">${t.category}</span>
-              <span class="todo-text">${t.text}</span>
-            </div>
+      const activeTodos = todos.filter(t => t.type === currentTodoType && !t.completed);
+      document.getElementById('todo-list').innerHTML = activeTodos.map(t => `
+        <div class="todo-item">
+          <div class="todo-content" onclick="toggleTodoItem(${t.id})">
+            <input type="checkbox" class="todo-checkbox" onclick="event.stopPropagation(); toggleTodoItem(${t.id})">
+            <span class="todo-text">${t.text}</span>
           </div>
           <div class="todo-meta">
-            <span class="todo-date">${t.date}</span>
+            <span class="date">${t.date}</span>
             <button class="delete-btn" onclick="confirmDeleteTodo(${t.id})">삭제</button>
           </div>
         </div>
       `).join('');
     }
 
-    /* --- [보관함 & 갤러리 렌더링] --- */
+    function renderPastTodos() {
+      const pastTodos = todos.filter(t => t.completed);
+      document.getElementById('todo-past-list').innerHTML = pastTodos.map(t => `
+        <div class="todo-item completed">
+          <div class="todo-content" onclick="toggleTodoItem(${t.id})">
+            <input type="checkbox" class="todo-checkbox" checked onclick="event.stopPropagation(); toggleTodoItem(${t.id})">
+            <div>
+              <span class="platform-badge" style="background-color:var(--primary-color); font-size:8px; margin-right:4px;">${t.type}</span>
+              <span class="todo-text">${t.text}</span>
+            </div>
+          </div>
+          <div class="todo-meta">
+            <span class="date">${t.date}</span>
+            <button class="delete-btn" onclick="confirmDeleteTodo(${t.id})">삭제</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    /* --- [공통 렌더링] --- */
     function updateAllViews() {
       const list = document.getElementById('link-list');
       let filtered = currentReactionFilter ? links.filter(l => l.reaction === currentReactionFilter) : [...links];
@@ -488,25 +614,8 @@
       }
       
       list.innerHTML = filtered.map(generateCardHTML).join('');
+      renderTodoMenu();
     }
-
-    function renderGalleryFolders() {
-      document.getElementById('gallery-folders').innerHTML = CATEGORIES.map(cat => {
-        return `
-          <div class="folder-card" onclick="openFolder('${cat}')">
-            <div class="folder-name" style="margin-bottom: 5px;">${cat}</div>
-            <div class="folder-count">${links.filter(l => l.category === cat).length}개</div>
-          </div>
-        `;
-      }).join('');
-    }
-
-    function openFolder(cat) {
-      document.getElementById('gallery-folders').style.display = 'none';
-      document.getElementById('gallery-items').style.display = 'block';
-      document.getElementById('gallery-list').innerHTML = links.filter(l => l.category === cat).map(generateCardHTML).join('');
-    }
-    function closeFolder() { document.getElementById('gallery-items').style.display = 'none'; document.getElementById('gallery-folders').style.display = 'grid'; }
 
     function setSort(type) { 
       currentSort = type; 
