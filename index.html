@@ -17,7 +17,7 @@
     .tab-content.active { display: block; }
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-    .controls { display: flex; gap: 5px; margin-bottom: 12px; flex-wrap: wrap; }
+    .controls { display: flex; gap: 5px; margin-bottom: 12px; flex-wrap: wrap; align-items: center; }
     button { padding: 6px 10px; border: none; border-radius: 12px; background-color: #e1e8ed; cursor: pointer; font-size: 11px; font-weight: bold; color: var(--text-main); outline: none; -webkit-tap-highlight-color: transparent; }
     .controls button.active { background-color: var(--primary-color); color: white; }
     .primary-btn { background-color: var(--primary-color); color: white; border-radius: 10px; padding: 6px 14px; border: none; font-weight: bold; cursor: pointer; font-size: 11px; }
@@ -40,7 +40,7 @@
     .react-btn.active { opacity: 1; filter: grayscale(0); background-color: #e1e8ed; color: var(--primary-color); }
     .footer-btns { display: flex; justify-content: space-between; align-items: center; }
     .date { font-size: 8px; color: var(--text-sub); }
-    .delete-btn { font-size: 9px; color: #aab8c2; background: none; border: none; cursor: pointer; padding: 0; }
+    .action-btn { font-size: 9px; color: #aab8c2; background: none; border: none; cursor: pointer; padding: 0 2px; }
 
     /* --- [모달 공통] --- */
     .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 2000; justify-content: center; align-items: center; padding: 20px; }
@@ -55,16 +55,40 @@
     .btn-confirm { background: var(--primary-color); border: none; color: white; padding: 8px 20px; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 11px;}
     #memo-input-text { width: 100%; height: 70px; border-radius: 8px; border: 1px solid var(--primary-color); padding: 10px; font-size: 12px; resize: none; outline: none; font-family: inherit; }
 
-    /* --- [독서록 책 디자인] --- */
-    .book-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; padding-top: 5px; }
-    .book-cover { border-radius: 2px 10px 10px 2px; border-left: 6px solid rgba(0,0,0,0.15); box-shadow: 2px 3px 5px rgba(0,0,0,0.1); aspect-ratio: 3 / 4; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 10px; cursor: pointer; text-align: center; position: relative; transition: 0.2s; -webkit-tap-highlight-color: transparent; }
+    /* --- [독서록 책 표지 - 고급 디자인 적용] --- */
+    .book-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; padding-top: 5px; }
+    .book-cover { 
+      border-radius: 4px 12px 12px 4px; 
+      border-left: 12px solid rgba(0,0,0,0.25); 
+      box-shadow: 4px 4px 10px rgba(0,0,0,0.15), inset 4px 0px 5px rgba(255,255,255,0.4); 
+      background-image: linear-gradient(120deg, rgba(255,255,255,0.2) 0%, transparent 15%, transparent 85%, rgba(0,0,0,0.05) 100%);
+      aspect-ratio: 3 / 4; 
+      display: flex; 
+      flex-direction: column; 
+      justify-content: center; 
+      align-items: center; 
+      padding: 12px; 
+      cursor: pointer; 
+      text-align: center; 
+      position: relative; 
+      transition: transform 0.2s, box-shadow 0.2s; 
+      -webkit-tap-highlight-color: transparent; 
+    }
     .book-cover:active { transform: scale(0.97); }
-    .book-title { font-size: 12px; font-weight: bold; color: rgba(0,0,0,0.8); line-height: 1.3; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; }
-    .book-count { position: absolute; bottom: 8px; right: 8px; font-size: 9px; color: rgba(0,0,0,0.5); font-weight: bold; }
-    .book-del-btn { position: absolute; top: -5px; right: -5px; background: white; border: 1px solid #ccc; border-radius: 50%; width: 20px; height: 20px; font-size: 10px; color: #888; display: flex; justify-content: center; align-items: center; cursor: pointer; }
+    .book-cover::after {
+      content: '';
+      position: absolute;
+      top: 2px; right: -2px; bottom: 2px; width: 3px;
+      background: #f0f0f0;
+      border-radius: 0 2px 2px 0;
+      box-shadow: inset 1px 0 2px rgba(0,0,0,0.1);
+    }
+    .book-title { font-size: 13px; font-weight: 900; color: rgba(0,0,0,0.8); line-height: 1.4; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; text-shadow: 1px 1px 0px rgba(255,255,255,0.4); z-index: 1; }
+    .book-count { position: absolute; bottom: 8px; right: 8px; background: rgba(0,0,0,0.4); color: white; padding: 2px 6px; border-radius: 10px; font-size: 9px; font-weight: bold; z-index: 1; }
+    .book-del-btn { position: absolute; top: -6px; right: -6px; background: white; border: 1px solid #ccc; border-radius: 50%; width: 22px; height: 22px; font-size: 10px; font-weight: bold; color: #888; display: flex; justify-content: center; align-items: center; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.1); z-index: 2; }
 
     /* --- [입력 영역 & 리스트 카드 공통] --- */
-    .input-area { background: white; padding: 12px; border-radius: 10px; border: 1px solid #e1e8ed; margin-bottom: 12px; }
+    .input-area { background: white; padding: 12px; border-radius: 10px; border: 1px solid #e1e8ed; margin-bottom: 12px; transition: 0.3s; }
     .input-textarea { width: 100%; height: 60px; border: none; outline: none; font-size: 12px; resize: none; font-family: inherit; }
     .input-actions { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; border-top: 1px dashed #e1e8ed; padding-top: 8px; }
     .photo-preview { width: 40px; height: 40px; border-radius: 8px; object-fit: cover; display: none; border: 1px solid #e1e8ed; }
@@ -75,7 +99,6 @@
     /* --- [체크리스트 전용] --- */
     .todo-top-menu { display: flex; gap: 8px; margin-bottom: 12px; }
     .todo-menu-btn { flex: 1; padding: 10px; background: white; border: 1px solid var(--primary-color); border-radius: 10px; color: var(--primary-color); font-weight: bold; font-size: 12px; cursor: pointer; text-align: center; }
-    
     .todo-item { display: flex; align-items: center; justify-content: space-between; background: white; border: 1px solid #e1e8ed; padding: 12px; margin-bottom: 8px; border-radius: 10px; transition: 0.2s; }
     .todo-item.completed { background: #f5f8fa; border-color: #cbd6e2; opacity: 0.6; }
     .todo-item.completed .todo-text { text-decoration: line-through; color: var(--text-sub); }
@@ -84,7 +107,6 @@
     .todo-text { font-size: 12px; color: var(--text-main); font-weight: bold; }
     .todo-meta { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
 
-    /* 이전 기록 날짜 그룹핑 배경 */
     .date-group { background-color: var(--sky-bg); border-radius: 10px; padding: 10px; margin-bottom: 15px; }
     .date-title { font-size: 11px; font-weight: bold; color: var(--primary-color); margin-bottom: 8px; padding-left: 4px; }
 
@@ -114,8 +136,8 @@
       <h3 class="custom-popup-title">캡션 작성</h3>
       <textarea id="memo-input-text" placeholder="여기에 내용을 적어주세요."></textarea>
       <div class="popup-btn-group">
-        <button class="btn-cancel" onclick="closeMemoModal()">cancel</button>
-        <button class="btn-confirm" onclick="saveMemoModal()">save</button>
+        <button class="btn-cancel" onclick="closeMemoModal()">취소</button>
+        <button class="btn-confirm" onclick="saveMemoModal()">저장</button>
       </div>
     </div>
   </div>
@@ -124,8 +146,8 @@
     <div class="custom-popup">
       <h3 class="custom-popup-title" id="confirm-msg">정말 삭제할까요?</h3>
       <div class="popup-btn-group">
-        <button class="btn-cancel" onclick="closeConfirmModal()">cancel</button>
-        <button class="btn-confirm" id="confirm-yes-btn">delete</button>
+        <button class="btn-cancel" onclick="closeConfirmModal()">취소</button>
+        <button class="btn-confirm" id="confirm-yes-btn">삭제</button>
       </div>
     </div>
   </div>
@@ -134,10 +156,10 @@
     <div class="controls">
       <button id="btn-new" class="active" onclick="setSort('new')">최신순</button>
       <button id="btn-shuffle" onclick="setSort('shuffle')">랜덤</button>
-      <button id="f-하트" onclick="toggleReactionFilter('하트')">♥️</button>
-      <button id="f-따봉" onclick="toggleReactionFilter('따봉')">👍</button>
-      <button id="f-고트" onclick="toggleReactionFilter('고트')">🐐</button>
-      <button id="f-와우" onclick="toggleReactionFilter('와우')">🤩</button>
+      <button id="f-하트" onclick="toggleReactionFilter('하트')">하트</button>
+      <button id="f-따봉" onclick="toggleReactionFilter('따봉')">따봉</button>
+      <button id="f-고트" onclick="toggleReactionFilter('고트')">고트</button>
+      <button id="f-와우" onclick="toggleReactionFilter('와우')">와우</button>
       <select id="category-filter" class="filter-select" onchange="setCategoryFilter(this.value)">
         <option value="all">전체 분류</option>
         <option value="재희">재희</option><option value="혜윤">혜윤</option><option value="벨">벨</option>
@@ -160,23 +182,29 @@
         <h3 id="current-book-title" style="margin:0; font-size:14px; color:var(--text-main);"></h3>
       </div>
       
-      <div class="input-area">
+      <div class="input-area" id="book-log-input-area">
         <textarea id="book-log-input" class="input-textarea" placeholder="이 책의 감상문을 남겨보세요. 여러 번 기록할 수 있습니다."></textarea>
         <div class="input-actions">
           <input type="file" id="book-photo" accept="image/*" style="display:none" onchange="previewPhoto(this, 'b-preview')">
           <div style="display:flex; gap:8px; align-items:center;">
-            <button onclick="document.getElementById('book-photo').click()" style="background:#e1e8ed; padding:5px 10px; border-radius:10px; border:none; font-weight:bold; font-size:10px;">image</button>
+            <button onclick="document.getElementById('book-photo').click()" style="background:#e1e8ed; padding:5px 10px; border-radius:10px; border:none; font-weight:bold; font-size:10px;">이미지 첨부</button>
             <img id="b-preview" class="photo-preview">
           </div>
-          <button onclick="saveBookLog()" class="primary-btn">save</button>
+          <button id="btn-book-log-save" onclick="saveBookLog()" class="primary-btn">기록 저장</button>
         </div>
       </div>
+
+      <div class="controls" style="margin-bottom: 10px;">
+        <button id="btn-book-asc" class="active" onclick="setBookLogSort('asc')">과거순</button>
+        <button id="btn-book-desc" onclick="setBookLogSort('desc')">최신순</button>
+      </div>
+
       <div id="book-log-list"></div>
     </div>
   </div>
 
   <div id="tab-diary" class="tab-content">
-    <div class="controls" style="margin-bottom: 10px;">
+    <div class="controls" style="margin-bottom: 10px; justify-content: space-between;">
       <select id="diary-filter" class="filter-select" onchange="setDiaryFilter(this.value)">
         <option value="all">모든 일기 보기</option>
         <option value="일상">일상</option>
@@ -184,9 +212,13 @@
         <option value="벨">벨</option>
         <option value="병">병</option>
       </select>
+      <div style="display: flex; gap: 5px;">
+        <button id="btn-diary-asc" class="active" onclick="setDiarySort('asc')">과거순</button>
+        <button id="btn-diary-desc" onclick="setDiarySort('desc')">최신순</button>
+      </div>
     </div>
 
-    <div class="input-area">
+    <div class="input-area" id="diary-input-area">
       <select id="diary-category-input" class="filter-select" style="padding: 4px 8px; font-size: 10px; margin-bottom: 8px;">
         <option value="일상">일상</option>
         <option value="타쿠">타쿠</option>
@@ -201,14 +233,13 @@
           <button onclick="document.getElementById('diary-photo').click()" style="background:#e1e8ed; padding:5px 10px; border-radius:10px; border:none; font-weight:bold; font-size:10px;">이미지 첨부</button>
           <img id="p-preview" class="photo-preview">
         </div>
-        <button onclick="saveDiary()" class="primary-btn">save</button>
+        <button id="btn-diary-save" onclick="saveDiary()" class="primary-btn">일기 저장</button>
       </div>
     </div>
     <div id="diary-list"></div>
   </div>
 
   <div id="tab-todo" class="tab-content">
-    
     <div id="todo-main">
       <div class="todo-top-menu">
         <button class="todo-menu-btn" onclick="openTodoView('버킷리스트')">버킷리스트</button>
@@ -266,17 +297,21 @@
     let books = JSON.parse(localStorage.getItem('choo_books')) || [];
 
     let currentSort = 'new', currentReactionFilter = '', currentCategoryFilter = 'all';
+    
+    // 일기장 및 독서록 정렬 상태 (기본값: 과거순 asc)
     let currentDiaryFilter = 'all'; 
-    let currentBookId = null;
+    let diarySortOrder = 'asc'; 
+    let bookLogSortOrder = 'asc';
 
+    let currentBookId = null;
     let tempPhoto = ''; 
     let shuffledOrder = []; 
     const CATEGORIES = ['미분류', '재희', '혜윤', '벨', '웃김', '정보', '위시', '연예계'];
-
-    // 책 랜덤 색상 (파스텔톤)
     const BOOK_COLORS = ['#FFD1DC', '#FFE5B4', '#E2F0CB', '#B5EAD7', '#C7CEEA', '#FCE1E4', '#E8DFF5'];
 
     let currentEditingMemoId = null;
+    let editingDiaryId = null;
+    let editingBookLogId = null;
     let pendingConfirmAction = null;
 
     function getFormattedDate() {
@@ -292,29 +327,25 @@
       return url.replace(/nitter\.[a-z]+/gi, 'x.com').replace('twitter.com', 'x.com');
     }
 
-    /* ⭐️ 핸드폰 자체 뒤로가기(팝스테이트) 방어 로직 */
     window.addEventListener('popstate', (e) => {
-      // 1. 열려있는 모달창 닫기
       document.querySelectorAll('.overlay').forEach(el => el.style.display = 'none');
-      
-      // 2. 각 탭의 서브 화면 닫고 메인 화면으로 복구
       document.getElementById('reading-detail').style.display = 'none';
       document.getElementById('reading-main').style.display = 'block';
-      
       document.getElementById('todo-bucket-view').style.display = 'none';
       document.getElementById('todo-past-view').style.display = 'none';
       document.getElementById('todo-main').style.display = 'block';
       
-      // 화면 렌더링 리셋
       currentBookId = null;
+      editingDiaryId = null;
+      editingBookLogId = null;
+      document.getElementById('btn-diary-save').innerText = '일기 저장';
+      document.getElementById('btn-book-log-save').innerText = '기록 저장';
+      
       renderBooks();
       renderTodos();
     });
 
-    // UI 버튼으로 뒤로갈 때 (히스토리 일치시키기 위해)
     function uiBack() { history.back(); }
-    
-    // 서브 화면 들어갈 때 히스토리 푸시
     function pushSubView() { history.pushState({ sub: true }, '', ''); }
 
     window.addEventListener('DOMContentLoaded', () => {
@@ -373,7 +404,7 @@
           </div>
           <div class="card-footer">
             <div class="reaction-group">
-              ${['♥️','👍','🐐','🤩'].map(e => `<button class="react-btn ${l.reaction===e?'active':''}" onclick="setReaction(${l.id},'${e}')">${e}</button>`).join('')}
+              ${['하트','따봉','고트','와우'].map(e => `<button class="react-btn ${l.reaction===e?'active':''}" onclick="setReaction(${l.id},'${e}')">${e}</button>`).join('')}
             </div>
             <div class="footer-btns" style="margin-top:5px;">
               <span class="date">${l.date}</span>
@@ -395,9 +426,8 @@
     function confirmDeleteDiary(id) { showConfirmModal("정말 이 일기를 삭제할까요?", () => { diaries = diaries.filter(d => d.id !== id); localStorage.setItem('choo_diaries', JSON.stringify(diaries)); renderDiaries(); }); }
     function confirmDeleteTodo(id) { showConfirmModal("정말 이 기록을 삭제할까요?", () => { todos = todos.filter(t => t.id !== id); localStorage.setItem('choo_todos', JSON.stringify(todos)); renderTodos(); renderBucketTodos(); renderPastTodos(); }); }
     function confirmDeleteBookLog(logId) { showConfirmModal("이 감상문을 삭제할까요?", () => { const bIndex = books.findIndex(b => b.id === currentBookId); books[bIndex].logs = books[bIndex].logs.filter(x => x.id !== logId); localStorage.setItem('choo_books', JSON.stringify(books)); renderBookLogs(); }); }
-    function confirmDeleteBook(id) { showConfirmModal("이 책과 모든 감상문을 삭제할까요?", () => { books = books.filter(b => b.id !== id); localStorage.setItem('choo_books', JSON.stringify(books)); renderBooks(); }); }
+    function confirmDeleteBook(id) { showConfirmModal("이 책과 모든 감상문을 삭제할까요?", () => { books = books.filter(b => b.id !== id); localStorage.setItem('choo_books', JSON.stringify(books)); uiBack(); }); }
 
-    /* --- [사진 미리보기 (공용)] --- */
     function previewPhoto(input, targetId) {
       if (input.files && input.files[0]) {
         const reader = new FileReader();
@@ -416,7 +446,7 @@
       tempPhoto = '';
     }
 
-    /* --- [독서록 책 표지 기능] --- */
+    /* --- [독서록 기능] --- */
     function addBook() {
       const title = prompt("추가할 책 제목을 입력하세요:");
       if (title && title.trim()) {
@@ -449,29 +479,75 @@
       document.getElementById('current-book-title').innerText = b.title;
       document.getElementById('reading-main').style.display = 'none';
       document.getElementById('reading-detail').style.display = 'block';
+      editingBookLogId = null;
+      document.getElementById('btn-book-log-save').innerText = '기록 저장';
+      document.getElementById('book-log-input-area').style.borderColor = '#e1e8ed';
       resetPhoto('book-photo', 'b-preview');
       renderBookLogs();
+    }
+
+    function editBookLog(id) {
+      const bIndex = books.findIndex(x => x.id === currentBookId);
+      const log = books[bIndex].logs.find(x => x.id === id);
+      editingBookLogId = id;
+      document.getElementById('book-log-input').value = log.content;
+      
+      if (log.photo) {
+        document.getElementById('b-preview').src = log.photo;
+        document.getElementById('b-preview').style.display = 'block';
+      } else {
+        resetPhoto('book-photo', 'b-preview');
+      }
+      
+      document.getElementById('btn-book-log-save').innerText = '기록 수정';
+      document.getElementById('book-log-input-area').style.borderColor = var(--primary-color);
+      document.getElementById('book-log-input-area').scrollIntoView({behavior: "smooth"});
     }
 
     function saveBookLog() {
       const content = document.getElementById('book-log-input').value.trim();
       if (!content && !tempPhoto) return;
       const bIndex = books.findIndex(x => x.id === currentBookId);
-      books[bIndex].logs.unshift({ id: Date.now(), date: getFormattedDate(), content: content, photo: tempPhoto });
-      localStorage.setItem('choo_books', JSON.stringify(books));
       
+      if (editingBookLogId) {
+        const lIndex = books[bIndex].logs.findIndex(x => x.id === editingBookLogId);
+        books[bIndex].logs[lIndex].content = content;
+        if (tempPhoto) books[bIndex].logs[lIndex].photo = tempPhoto;
+        editingBookLogId = null;
+        document.getElementById('btn-book-log-save').innerText = '기록 저장';
+        document.getElementById('book-log-input-area').style.borderColor = '#e1e8ed';
+      } else {
+        books[bIndex].logs.unshift({ id: Date.now(), date: getFormattedDate(), content: content, photo: tempPhoto });
+      }
+      
+      localStorage.setItem('choo_books', JSON.stringify(books));
       document.getElementById('book-log-input').value = '';
       resetPhoto('book-photo', 'b-preview');
       renderBookLogs();
     }
 
+    function setBookLogSort(order) {
+      bookLogSortOrder = order;
+      document.getElementById('btn-book-asc').classList.toggle('active', order === 'asc');
+      document.getElementById('btn-book-desc').classList.toggle('active', order === 'desc');
+      renderBookLogs();
+    }
+
     function renderBookLogs() {
       const b = books.find(x => x.id === currentBookId);
-      document.getElementById('book-log-list').innerHTML = b.logs.map(log => `
+      let logsCopy = [...b.logs];
+      
+      if (bookLogSortOrder === 'asc') { logsCopy.sort((a, b) => a.id - b.id); } 
+      else { logsCopy.sort((a, b) => b.id - a.id); }
+
+      document.getElementById('book-log-list').innerHTML = logsCopy.map(log => `
         <div class="list-card" onclick="openDiaryModal2('${log.date}', \`${log.content.replace(/`/g, "\\`")}\`, '${log.photo || ''}', '독서록')">
           <div style="font-size:10px; color:#aaa; margin-bottom:6px; display:flex; justify-content:space-between;">
             <span>${log.date}</span>
-            <button class="delete-btn" onclick="event.stopPropagation(); confirmDeleteBookLog(${log.id})">삭제</button>
+            <div>
+              <button class="action-btn" onclick="event.stopPropagation(); editBookLog(${log.id})">수정</button>
+              <button class="action-btn" onclick="event.stopPropagation(); confirmDeleteBookLog(${log.id})">삭제</button>
+            </div>
           </div>
           ${log.photo ? `<img src="${log.photo}" class="list-img">` : ''}
           <div style="font-size:12px; line-height:1.4; white-space:pre-wrap;">${log.content}</div>
@@ -480,14 +556,50 @@
     }
 
     /* --- [일기장] --- */
+    function setDiarySort(order) {
+      diarySortOrder = order;
+      document.getElementById('btn-diary-asc').classList.toggle('active', order === 'asc');
+      document.getElementById('btn-diary-desc').classList.toggle('active', order === 'desc');
+      renderDiaries();
+    }
+
+    function editDiary(id) {
+      const d = diaries.find(item => item.id === id);
+      editingDiaryId = id;
+      document.getElementById('diary-input').value = d.content;
+      document.getElementById('diary-category-input').value = d.category || '일상';
+      
+      if (d.photo) {
+        document.getElementById('p-preview').src = d.photo;
+        document.getElementById('p-preview').style.display = 'block';
+      } else {
+        resetPhoto('diary-photo', 'p-preview');
+      }
+      
+      document.getElementById('btn-diary-save').innerText = '일기 수정';
+      document.getElementById('diary-input-area').style.borderColor = var(--primary-color);
+      document.getElementById('diary-input-area').scrollIntoView({behavior: "smooth"});
+    }
+
     function saveDiary() {
       const content = document.getElementById('diary-input').value.trim();
       const category = document.getElementById('diary-category-input').value; 
       if (!content && !tempPhoto) return;
       
-      diaries.unshift({ id: Date.now(), date: getFormattedDate(), content: content, photo: tempPhoto, category: category });
-      localStorage.setItem('choo_diaries', JSON.stringify(diaries));
+      if (editingDiaryId) {
+        const index = diaries.findIndex(d => d.id === editingDiaryId);
+        diaries[index].content = content;
+        diaries[index].category = category;
+        if (tempPhoto) diaries[index].photo = tempPhoto;
+        
+        editingDiaryId = null;
+        document.getElementById('btn-diary-save').innerText = '일기 저장';
+        document.getElementById('diary-input-area').style.borderColor = '#e1e8ed';
+      } else {
+        diaries.unshift({ id: Date.now(), date: getFormattedDate(), content: content, photo: tempPhoto, category: category });
+      }
       
+      localStorage.setItem('choo_diaries', JSON.stringify(diaries));
       document.getElementById('diary-input').value = '';
       resetPhoto('diary-photo', 'p-preview');
       renderDiaries();
@@ -496,8 +608,11 @@
     function setDiaryFilter(cat) { currentDiaryFilter = cat; renderDiaries(); }
 
     function renderDiaries() {
-      let filteredDiaries = diaries;
+      let filteredDiaries = [...diaries];
       if (currentDiaryFilter !== 'all') { filteredDiaries = filteredDiaries.filter(d => (d.category || '일상') === currentDiaryFilter); }
+      
+      if (diarySortOrder === 'asc') { filteredDiaries.sort((a, b) => a.id - b.id); } 
+      else { filteredDiaries.sort((a, b) => b.id - a.id); }
 
       document.getElementById('diary-list').innerHTML = filteredDiaries.map(d => `
         <div class="list-card" onclick="openDiaryModal2('${d.date}', \`${d.content.replace(/`/g, "\\`")}\`, '${d.photo || ''}', '${d.category || '일상'}')">
@@ -506,7 +621,10 @@
               <span class="platform-badge" style="background-color:var(--primary-color); font-size:8px; margin-right:4px; border-radius:4px;">${d.category || '일상'}</span>
               <span>${d.date}</span>
             </div>
-            <button class="delete-btn" onclick="event.stopPropagation(); confirmDeleteDiary(${d.id})">삭제</button>
+            <div>
+              <button class="action-btn" onclick="event.stopPropagation(); editDiary(${d.id})">수정</button>
+              <button class="action-btn" onclick="event.stopPropagation(); confirmDeleteDiary(${d.id})">삭제</button>
+            </div>
           </div>
           ${d.photo ? `<img src="${d.photo}" class="list-img">` : ''}
           <div style="font-size:12px; line-height:1.4; white-space:pre-wrap; overflow:hidden; text-overflow:ellipsis; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical;">${d.content}</div>
@@ -514,7 +632,6 @@
       `).join('');
     }
 
-    // 일기장 & 독서록 공용 모달창 띄우기
     function openDiaryModal2(date, content, photo, tag) {
       document.getElementById('dm-date').innerHTML = `<span style="color:var(--primary-color); font-weight:bold; margin-right:5px;">[${tag}]</span>${date}`;
       document.getElementById('dm-content').innerText = content;
@@ -525,9 +642,7 @@
     }
     function closeDiaryModal() { document.getElementById('diary-modal').style.display = 'none'; }
 
-
-    /* --- ⭐️ [스마트 체크리스트 로직] ⭐️ --- */
-    
+    /* --- [스마트 체크리스트] --- */
     function openTodoView(type) {
       pushSubView();
       if(type === '버킷리스트') {
@@ -555,7 +670,6 @@
     function toggleTodoItem(id) {
       const index = todos.findIndex(t => t.id === id);
       todos[index].completed = !todos[index].completed;
-      // 완료 시 현재 날짜 기록 (이걸로 오늘한건지 판단)
       todos[index].compDate = todos[index].completed ? getFormattedDate() : null;
       localStorage.setItem('choo_todos', JSON.stringify(todos));
       
@@ -564,7 +678,6 @@
       if(document.getElementById('todo-past-view').style.display === 'block') renderPastTodos();
     }
 
-    // 메인화면 할일 로직: (미완료) OR (완료인데 오늘 완료한 것)
     function renderTodos() {
       const today = getFormattedDate();
       const mainTodos = todos.filter(t => t.type === '할 일' && (!t.completed || t.compDate === today));
@@ -583,7 +696,6 @@
       `).join('');
     }
 
-    // 버킷리스트 화면: 버킷리스트 중 (미완료)
     function renderBucketTodos() {
       const bucketTodos = todos.filter(t => t.type === '버킷리스트' && !t.completed);
       document.getElementById('todo-bucket-list').innerHTML = bucketTodos.map(t => `
@@ -600,12 +712,10 @@
       `).join('');
     }
 
-    // 이전 기록: (완료인데 오늘이 아닌 할일) OR (완료된 버킷리스트)
     function renderPastTodos() {
       const today = getFormattedDate();
       const pastTodos = todos.filter(t => t.completed && (t.type === '버킷리스트' || (t.type === '할 일' && t.compDate !== today)));
       
-      // 날짜별 그룹핑 로직
       const grouped = {};
       pastTodos.forEach(t => {
         const d = t.compDate || t.date;
@@ -635,7 +745,6 @@
       document.getElementById('todo-past-list').innerHTML = html;
     }
 
-
     /* --- [보관함 전체 렌더링] --- */
     function updateAllViews() {
       const list = document.getElementById('link-list');
@@ -645,7 +754,7 @@
       else if (currentSort === 'shuffle') { filtered.sort((a, b) => shuffledOrder.indexOf(a.id) - shuffledOrder.indexOf(b.id)); }
       
       list.innerHTML = filtered.map(generateCardHTML).join('');
-      renderTodos(); // 할 일 리스트 갱신
+      renderTodos(); 
     }
 
     function setSort(type) { 
