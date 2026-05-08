@@ -131,7 +131,7 @@
   <div id="tab-archive" class="tab-content active">
     <div class="controls">
       <button id="btn-new" class="active" onclick="setSort('new')">최신</button>
-      <button id="btn-shuffle" onclick="setSort('shuffle')">🔀 랜덤</button>
+      <button id="btn-shuffle" onclick="setSort('shuffle')">r</button>
       <button id="f-❤️" onclick="toggleReactionFilter('❤️')">❤️</button>
       <button id="f-👍" onclick="toggleReactionFilter('👍')">👍</button>
       <button id="f-🐐" onclick="toggleReactionFilter('🐐')">🐐</button>
@@ -177,10 +177,10 @@
       <div class="diary-actions">
         <input type="file" id="diary-photo" accept="image/*" style="display:none" onchange="previewPhoto(this)">
         <div style="display:flex; gap:8px; align-items:center;">
-          <button onclick="document.getElementById('diary-photo').click()" style="background:#e1e8ed; padding:5px 10px; border-radius:10px;">🖼️ 이미지</button>
+          <button onclick="document.getElementById('diary-photo').click()" style="background:#e1e8ed; padding:5px 10px; border-radius:10px;">image</button>
           <img id="p-preview" class="photo-preview">
         </div>
-        <button onclick="saveDiary()" style="background:var(--primary-color); color:white; border-radius:10px; padding:6px 14px; border:none; font-weight:bold;">저장✍️</button>
+        <button onclick="saveDiary()" style="background:var(--primary-color); color:white; border-radius:10px; padding:6px 14px; border:none; font-weight:bold;">save</button>
       </div>
     </div>
     <div id="diary-list"></div>
@@ -188,10 +188,10 @@
 
   <nav class="bottom-nav">
     <button id="nav-archive" class="nav-item active" onclick="switchTab('archive')">
-      <span class="nav-icon">📦</span><span class="nav-text">보관함</span>
+      <span class="nav-icon">😸</span><span class="nav-text">보관함</span>
     </button>
     <button id="nav-gallery" class="nav-item" onclick="switchTab('gallery')">
-      <span class="nav-icon">📁</span><span class="nav-text">갤러리</span>
+      <span class="nav-icon">🐶</span><span class="nav-text">갤러리</span>
     </button>
     <button id="nav-diary" class="nav-item" onclick="switchTab('diary')">
       <span class="nav-icon">📝</span><span class="nav-text">일기장</span>
